@@ -1,0 +1,12 @@
+<svg id="outline-remove_shopping_cart-24px" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27">
+  <g id="Bounding_Boxes">
+    <path id="Path_2427" data-name="Path 2427" d="M0,0H27V27H0Z" fill="none"/>
+  </g>
+  <g id="Outline" transform="translate(0 0.931)">
+    <g id="Group_82" data-name="Group 82">
+      <path id="Path_2428" data-name="Path 2428" d="M1.607,1.13,0,2.737l5,5,2.519,5.312L5.984,15.846A2.2,2.2,0,0,0,5.7,16.94a2.286,2.286,0,0,0,2.28,2.28h8.5l1.573,1.573a2.273,2.273,0,1,0,3.169,3.169L24.461,27.2l1.607-1.607ZM7.979,16.94l1.254-2.28h2.69l2.28,2.28Z" transform="translate(0 -1.13)" fill="#db2b39"/>
+      <path id="Path_2429" data-name="Path 2429" d="M27.94,4H7.12l3.233,1.649H25.208L20.747,9.77H18.419l3.136,1.6a3.723,3.723,0,0,0,2.021-.8l5.787-5.35C29.961,4.676,29.169,4,27.94,4Z" transform="translate(-5.035 -1.634)" fill="#db2b39"/>
+      <path id="Path_2430" data-name="Path 2430" d="M6.65,18A1.649,1.649,0,1,0,8.3,19.649,1.646,1.646,0,0,0,6.65,18Z" transform="translate(1.035 3.123)" fill="#db2b39"/>
+    </g>
+  </g>
+</svg>

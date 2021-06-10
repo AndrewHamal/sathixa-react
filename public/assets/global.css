@@ -1,0 +1,510 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600&display=swap");
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: "Open Sans", sans-serif;
+    max-width: 100vw;
+    height: 100vh;
+
+}
+
+p{
+    margin-bottom: 0px;
+    color: #495867;
+}
+.font-10{
+    font-size: 10px !important;
+}
+
+.font-12{
+    font-size: 12px !important;
+}
+.font-14{
+    font-size: 14px !important;
+}
+.font-17{
+    font-size: 17px !important;
+}
+
+
+
+h3{
+    color: #401F21;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.sathixa-intro-p{
+    color: #8E9195;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 0px !important;
+}
+
+.main-p{
+    margin-bottom: 0px !important;
+    font-size: 14px;
+}
+.p-location-12{
+    font-size: 12px;
+    margin-bottom: 0px !important;
+    color: #495867;
+    line-height: 0.8;
+}
+
+.package-time-p{
+    color: #3E454D;
+    font-size: 12px;
+    margin-bottom: 0px !important;
+}
+.p-location-14{
+    font-size: 14px;
+    margin-bottom: 0px !important;
+    color: #495867;
+    font-weight: 600;
+}
+.nav{
+    background-color: #DDF1EE !important;
+    border-radius: 28px;
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link{
+    background-color: #DB2B39 !important;
+    font-size: 12px;
+}
+
+
+
+.nav-pills .nav-link {
+    border-radius: 28px !important;
+    font-size: 12px;
+}
+
+
+
+
+
+.nav-pills .nav-link{
+    color: #707070;
+}
+
+.btn-primary,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:visited,
+.btn-primary:hover{
+    background-color: #DB2B39 !important;
+    border-radius: 13px !important;
+    border-color: unset;
+    font-size: 14px !important;
+    padding: unset;
+    height: 2.5rem;
+    width: 12rem;
+}
+
+.btn-google,
+.btn-google:active,
+.btn-google:focus,
+.btn-google:visited,
+.btn-google:hover{
+    background-color: unset !important;
+    color: #495867;
+
+    border: 1px solid#B9DBD6;
+    border-radius: 13px !important;
+    border-color: unset;
+    font-size: 14px !important;
+    padding: unset;
+    height: 2.5rem;
+    width: 12rem;
+}
+.btn-container{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+
+label{
+    font-size: 14px !important;
+}
+
+::-webkit-input-placeholder {
+    color: #B1B1B1 !important;
+    font-size: 12px;
+
+
+
+}
+
+
+
+select{
+    color: #B1B1B1 !important;
+    font-size: 12px !important;
+}
+::placeholder {
+    color: #B1B1B1 !important;
+}
+
+.form-control:focus{
+    border-color: unset;
+    box-shadow: unset;
+}
+
+.form-group>label{
+    color: #868F98 !important;
+    font-weight: 600;
+}
+
+.rangeslider__fill{
+    background-color: #DB2B39 !important;
+}
+
+.rangeslider{
+    background: white;
+}
+
+.rangeslider--horizontal {
+    height: 13px !important;
+
+}
+
+.rangeslider__handle{
+    height: 30px !important;
+    width: 30px !important;
+}
+.rangeslider--horizontal .rangeslider__handle{
+    top: -9px !important;
+}
+
+.form-control-file::before{
+    background: unset !important;
+    border: unset !important;
+
+}
+
+.fa, .fas{
+    color: #495867;
+}
+
+.color-red{
+    color: #DB2B39;
+}
+
+.fa-map-marker-alt{
+    color: #DB2B39;
+    font-size: 1.7em;
+}
+.fa-store{
+    color: #DB2B39;
+}
+
+.fa-google{
+    color: #DB2B39;
+}
+.fa-search{
+    left: 92%;
+    top: 10px;
+}
+.search-bar{
+
+    background: #edf4f7 !important;
+    border: none !important;
+    border-radius: 10px !important;
+
+}
+
+.paackage-card{
+    background: transparent linear-gradient(180deg, #FFFFFF 0%, #F8F6F7 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000012;
+    padding: 10px;
+    max-width: 250px;
+    border-radius: 16px;
+}
+
+.package-card-date{
+    color: #ACACAC;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.rider-details{
+    font-size: 12px;
+    font-weight: 600;
+    max-width: 150px;
+}
+.vendor-package-price{
+    color: #DB2B39;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.dot{
+    height: 12px;
+    width: 12px;
+    background-color:#DB2B39;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-small{
+    height: 5px;
+    width: 5px;
+    background-color:#495867;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 1px !important;
+}
+.dot-inactive{
+    height: 12px;
+    width: 12px;
+    background-color:#D5D3D3;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-big{
+    height: 25px;
+    width: 25px;
+    background-color:#DB2B39;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.tracking-hr{
+    width: 50px;
+    height: 4px;
+    background: #DB2B39;
+    display: inline-block;
+    margin-left: 1px !important;
+    margin-right: 1px !important;
+}
+.tracking-hr-inactive{
+    width: 50px;
+    height: 4px;
+    background: #D5D3D3;
+    display: inline-block;
+    margin-left: 1px !important;
+    margin-right: 1px !important;
+}
+
+.fa-shuttle-van{
+    color: white;
+    text-align: center;
+}
+
+.vendor-cancel-delivery{
+    color: #DB2B39;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.overflow-y-scroll{
+    overflow-y: scroll;
+}
+
+.hide-scrollbar::-webkit-scrollbar{
+    display: none;
+    scrollbar-width: none;
+
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+.status-tab{
+    background: #F3F3F3;
+
+
+
+}
+
+:-webkit-scrollbar{
+    display: none;
+    width: unset;
+
+}
+
+
+.status-tab>.selected{
+    background: #DB2B39;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 20px;
+
+
+}
+.status-tab>.not-selected{
+    color: #130909;
+    opacity: 40%;
+    font-size: 12px;
+    font-weight: 600;
+
+
+
+}
+
+.store-border{
+    border: 1px solid #DB2B39;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+.total-order-card{
+
+    padding: 8px;
+    border-radius: 5px
+}
+
+.sucess-vendor{
+    background: #F1FFF8;
+}
+.rejected-vendor{
+    background: #FCE7E7;
+}
+
+.terms-color{
+    color: #1592E6 !important;
+}
+
+.text-align-start{
+    text-align: start;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 45px;
+}
+
+
+.login-input {
+    font-size: 18px;
+    padding: 10px 10px 2px 5px;
+    display: block;
+    width: 100%;
+
+    border: none;
+    border-bottom: 1px solid #495867;
+}
+
+.login-input:focus {
+    outline: none;
+}
+
+
+.login-label {
+    color: #495867;
+    font-size: 14px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    left: 5px;
+    top: 10px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+
+.login-input:focus~.login-label,
+.login-input:valid~.login-label {
+    top: -20px;
+    font-size: 14px;
+    color: #25313d;
+}
+
+
+.bar {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.bar:before,
+.bar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.bar:before {
+    left: 50%;
+}
+
+.bar:after {
+    right: 50%;
+}
+
+/* active state */
+.login-input:focus~.bar:before,
+.login-input:focus~.bar:after {
+    width: 50%;
+}
+
+
+.highlight {
+    position: absolute;
+    height: 60%;
+    width: 100px;
+    top: 25%;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+
+.login-input:focus~.highlight {
+    -webkit-animation: inputHighlighter 0.3s ease;
+    -moz-animation: inputHighlighter 0.3s ease;
+    animation: inputHighlighter 0.3s ease;
+}
+
+
+@-webkit-keyframes inputHighlighter {
+    from {
+        background: #BCEBCB;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+
+@-moz-keyframes inputHighlighter {
+    from {
+        background: #BCEBCB;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+
+@keyframes inputHighlighter {
+    from {
+        background: #BCEBCB;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
