@@ -8,6 +8,7 @@ html {
   font-family: "Open Sans", sans-serif !important;
   max-width: 100vw;
   height: 100vh;
+  background-color: #fafafa !important;
 }
 
 .bg-red {
@@ -20,7 +21,7 @@ html {
 
 p {
   margin-bottom: 0px !important;
-  color: #495867;
+  color: #2a4858;
 }
 
 hr {
@@ -915,11 +916,19 @@ a:hover {
   height: 140px !important;
 }
 
+.status-sent {
+  color: #0e50b2;
+}
+
+.status-closed {
+  color: #db2b39;
+}
+
 .package-card {
-  box-shadow: 0px 3px 6px #00000029;
   border-radius: 19px;
   background-color: white;
   padding: 13px;
+  border: 1px solid #5957570d;
 }
 .width-pack {
   width: 65px;
@@ -971,4 +980,50 @@ td {
 }
 .font-weight-700 {
   font-weight: 500;
+}
+.top-nav.center-text {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ant-page-header-heading-title {
+  color: white !important;
+}
+
+.anticon-arrow-left {
+  color: white !important;
+}
+
+.ant-layout {
+  background-color: #fafafa !important;
+}
+.heading-sm {
+  color: #655f5f;
+  font-size: 9px;
+}
+.heading-l {
+  color: #655f5f;
+  font-size: 12px;
+}
+
+.text-normal {
+  font-size: 14px;
+}
+.text-lg {
+  font-size: 17px;
+}
+
+.f-w-400 {
+  font-weight: 400;
+}
+.f-w-500 {
+  font-weight: 500;
+}
+.f-w-600 {
+  font-weight: 600;
+}
+.white-card {
+  background-color: white;
+  padding: 10px;
 }

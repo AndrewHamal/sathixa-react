@@ -8,7 +8,7 @@ import { token } from "./reducers/reducers";
 import { useDispatch } from "react-redux";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoutes";
-import Packages from "./pages/vendor/Packages";
+import PackageTrack from "./pages/vendor/PackageTrack";
 import FooterMenu from "./parts/vendor/FooterMenu";
 import SendPackage from "./pages/vendor/SendPackage";
 import Success from "./pages/vendor/Success";
@@ -20,6 +20,8 @@ import "./antdTheme.less";
 import Pusher from "pusher-js";
 import Notif from "./pages/vendor/Notif";
 import Delivery from "./pages/vendor/Delivery";
+import Profile from "./pages/vendor/Profile";
+import Pack from "./pages/vendor/Pack";
 
 const App = () => {
   const ref = useRef(null);
@@ -96,6 +98,9 @@ const App = () => {
           <Route exact path={"/send"} component={Send} />
           <Route exact path={"/notif"} component={Notif} />
           <Route exact path={"/delivery"} component={Delivery} />
+          <Route exact path={"/Profile"} component={Profile} />
+          <Route exact path={"/Pack"} component={Pack} />
+          <Route exact path={"/PackageTrack"} component={PackageTrack} />
           <Route
             exact
             render={(props) =>
@@ -113,11 +118,11 @@ const App = () => {
             auth={loggedIn}
           />
           <ProtectedRoute path={"/map"} component={MapPage} auth={loggedIn} />
-          <ProtectedRoute
+          {/* <ProtectedRoute
             path={"/package"}
             component={Packages}
             auth={loggedIn}
-          />
+          /> */}
           <ProtectedRoute
             path={"/package-form"}
             component={SendPackage}

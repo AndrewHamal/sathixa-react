@@ -2,7 +2,7 @@ import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "antd";
 
-import PackgeImg from "../../assets/vendor/package.svg";
+import PackgeImg from "../../assets/vendor/packageimg.svg";
 import { Steps } from "antd";
 
 const { Step } = Steps;
