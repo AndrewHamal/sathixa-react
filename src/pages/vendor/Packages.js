@@ -1,25 +1,75 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import { getPackages } from "../../api/vendor";
 import {getPackage, packageStore} from "../../reducers/reducers";
 import {useDispatch, useSelector} from "react-redux";
+import InfiniteScroll from "react-infinite-scroll-component";
+import {SegmentedControl} from "antd-mobile";
+import {Skeleton} from "antd";
 
 const Packages = () => {
     const dispatch = useDispatch();
     const packageValue = useSelector(getPackage)
+    const [nextPage, setPage] = useState(1)
+    const [lastPage, setLastPage] = useState(1)
+    const [hasMore, setHasMore] = useState(false)
+    const [loader, setLoader] = useState(false)
+    const [msgError, setMsgError] = useState('')
 
-    useEffect( () => {
-        if(!packageValue.length) {
-            getPackages()
-                .then(res => {
-                    if (res.status === 200) {
-                        dispatch(packageStore(res.data.data))
-                    }
-                })
+    const fetchData = (search, page) => {
+        setLoader(true)
+        getPackages(search, page)
+            .then(res => {
+                if (res?.status === 200) {
+                    setLoader(false)
+                    let data = res.data.data
+                    let lastPage = res.data.last_page
+                    let nextPages = res.data.current_page + 1;
+
+                    if(lastPage !== 1)
+                        setPage(nextPages)
+
+                    setLastPage( lastPage )
+
+                    if(lastPage > res.data.current_page)
+                        setHasMore(true)
+                    else
+                        setHasMore(false)
+
+                    dispatch(packageStore( packageValue.concat(data)))
+                }
+            })
+    }
+
+    const handleSearch = (event) => {
+        let text = event.target.value
+        setLoader(true)
+        getPackages(text, 0)
+            .then(res => {
+                setLoader(false)
+                if (res?.status === 200) {
+                    dispatch(packageStore(res.data.data))
+                }
+
+                if(res.data.data.length === 0)
+                    setMsgError(<small> No Data Found </small>)
+
+            })
+    }
+
+    const getFilterPackages = () => {
+        fetchData('', nextPage)
+    }
+
+    useEffect(() => {
+        if(packageValue.length === 0) {
+            fetchData('', nextPage)
         }
-    }, [packageValue])
+    }, [])
 
 
-    return <section className="container mt-3 px-1">
+    return <div>
+
+    <section className="container mt-3 px-1">
         <div className="col-md-12 pb-2">
             <div className="d-flex justify-content-between mb-3">
                 <p className="p-location-14">Satichha</p>
@@ -27,7 +77,7 @@ const Packages = () => {
             </div>
             <div className="form-group my-3 position-relative">
                 <i className="fas fa-search position-absolute " />
-                <input type="text" className="form-control search-bar " id="search" placeholder="Enter your track number" />
+                <input type="text" className="form-control search-bar" onInput={handleSearch} id="search" placeholder="Enter your track number" />
             </div>
             <div>
                 <p className="font-17 font-weight-bold">Your Packages</p>
@@ -164,39 +214,56 @@ const Packages = () => {
                 </div>
             </div>
             <div className="status-tab d-flex justify-content-between my-3">
-                <span className="selected my-auto">Total Order</span>
-                <span className="not-selected my-auto">Delivered</span>
-                <span className="not-selected my-auto pl-2 mx-2">Processing</span>
+                <SegmentedControl
+                    className={"w-100 border-none font-14"}
+                    values={['Total Order', 'Delivered', 'Processing']}
+                    tintColor={"#db2b39"}
+                    // onChange={e => getFilterPackages(e.nativeEvent.selectedSegmentIndex)}
+                    // onValueChange={this.onValueChange}
+                />
             </div>
             <div>
+                <Skeleton loading={loader} active />
 
-                {
-                    packageValue ?
-                        packageValue.map((res,key) => (
-                            <div key={key} className="total-order-card sucess-vendor mb-2 d-flex justify-content-between">
-                                <div className="d-flex">
-                                    <div className="store-border d-flex">
-                                        <i className="fas fa-store m-auto" />
+                <InfiniteScroll
+                    dataLength={packageValue.length}
+                    next={getFilterPackages}
+                    hasMore={ hasMore }
+                    loader={<p className={"my-2"}> Loading...</p>}
+                >
+
+
+                    {
+                        packageValue.length > 0 ?
+                            packageValue.map((res,key) => (
+                                <div key={key} className="total-order-card sucess-vendor mb-2 d-flex justify-content-between">
+                                    <div className="d-flex">
+                                        <div className="store-border d-flex p-2">
+                                            <i className="fas fa-store m-auto" />
+                                        </div>
+                                        <div className="ml-1">
+                                            <p className="font-17 font-weight-bold">{ res.receiver_name }</p>
+                                            <p className="package-card-date pt-0">{ res.receiver_address }</p>
+                                        </div>
                                     </div>
-                                    <div className="ml-1">
-                                        <p className="font-17 font-weight-bold text-capitalize">{ 'dsadsa' }</p>
-                                        <p className="package-card-date">{ res.receiver_address }</p>
+                                    <div>
+                                        <p className="package-card-date">Processing</p>
+                                        <p className="font-14 font-weight-bold">Feb 22</p>
                                     </div>
                                 </div>
-                                <div>
-                                    <p className="package-card-date">Processing</p>
-                                    <p className="font-14 font-weight-bold">Feb 22</p>
-                                </div>
-                            </div>
-                        ))
+                            ))
 
-                        : <small> 'No Package created!!!' </small>
+                            : msgError
+                    }
 
-                }
+                </InfiniteScroll>
+
 
 
             </div>
-        </div></section>
+        </div>
+    </section>
+    </div>
 }
 
 export default Packages

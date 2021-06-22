@@ -12,10 +12,12 @@ import FooterMenu from "./parts/vendor/FooterMenu";
 import SendPackage from "./pages/vendor/SendPackage";
 import Success from "./pages/vendor/Success";
 import LoadingBar from 'react-top-loading-bar';
-import MapPage from "./pages/vendor/MapPage";
+// import MapPage from "./pages/vendor/MapPage";
 import Echo from 'laravel-echo';
 import { location } from "./reducers/locateReducer";
+import './assets/global.css';
 import './antdTheme.less';
+import MapSearch from "./pages/vendor/MapSearch";
 import Pusher from "pusher-js"
 
 const App = () => {
@@ -24,6 +26,7 @@ const App = () => {
     const [loggedIn, setLoggedIn] = React.useState(
         localStorage.getItem('loggedIn') == 'true' || false
     );
+    const [getPathname, setPathname] = useState(null)
     const history = useHistory()
 
     const dispatch = useDispatch()
@@ -45,7 +48,6 @@ const App = () => {
     };
 
     useEffect(() => {
-
         // websocket listen
         const options = {
             broadcaster: process.env.REACT_APP_BROADCAST,
@@ -70,30 +72,47 @@ const App = () => {
         // redirect if base
         if(window.location.pathname === '/')
             history.push('/login')
+            
+        ref.current.complete()
 
-        history.listen((param)=>{
-            if(ref)
-                ref.current.continuousStart()
-            checkDom()
+    }, [])
+
+    useEffect(() => {
+        const listener = history.listen(() => {
+          if(typeof ref?.current !== "undefined"){
+            ref?.current?.continuousStart();
+            setPathname(prev => prev + 1)
+          }
         })
-
-        const checkDom = () => {
-            if(document.readyState === 'complete') {
-                if(ref)
-                    ref.current.complete()
-            }else{
-                ref.current.complete()
-            }
+        return () => {
+          listener();
         }
-    })
+    
+    }, [history])
 
+    useEffect(() => {
+        const completeLoader = () => {
+          if(typeof ref?.current !== "undefined") {
+            setTimeout(() => {
+              ref?.current?.complete()
+            }, 600)
+          }
+        }
+    
+        return () => {
+          completeLoader()
+        }
+     
+      }, [getPathname])
+
+    // loader init
+   
 
     return (
         <div>
             <LoadingBar color='#f11946' ref={ref} />
 
-            <div className="App mb-100">
-
+            <div className={ loggedIn && window.location.pathname !== "/map-search" ? 'App mb-100' : 'App'} >
               <Switch>
 
                   /*vendo routes */
@@ -107,7 +126,8 @@ const App = () => {
                       )} path="/login" />
 
                   <ProtectedRoute path={ "/dashboard" } component={ Dashboard } auth={loggedIn}/>
-                  <ProtectedRoute path={ "/map" } component={ MapPage } auth={loggedIn}/>
+                  {/*<ProtectedRoute path={ "/map" } component={ MapPage } auth={loggedIn}/>*/}
+                  <ProtectedRoute path={ "/map-search" } component={ MapSearch } auth={loggedIn}/>
                   <ProtectedRoute path={ "/package" } component={ Packages } auth={loggedIn}/>
                   <ProtectedRoute path={ "/package-form" } component={ SendPackage } auth={loggedIn}/>
                   <ProtectedRoute path ={ "/Success" } component={ Success } auth={loggedIn} />
@@ -116,10 +136,11 @@ const App = () => {
                       (<Logout {...props} logout={logout} />
                       )} path="/logout" />
 
-
               </Switch>
 
-              { loggedIn ? <FooterMenu />  : '' }
+              {  loggedIn && window.location.pathname !== "/map-search" ?
+                  <FooterMenu />  : ''
+              }
           </div>
         </div>
     )

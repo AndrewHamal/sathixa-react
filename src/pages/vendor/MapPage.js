@@ -20,6 +20,7 @@ const osm = {
     }
 }
 
+
 const MapTraker = () => {
 
     const coordinateValue = useSelector(getLocation)
@@ -40,10 +41,11 @@ const MapTraker = () => {
         [28.19890992924868, 81.68293118476868],
         [28.199240869721123, 81.68308138847352],
     ]
+
     const limeOptions = { color: 'lime' }
     const position = [ coordinateValue.lat ? coordinateValue.lat : 51.505, coordinateValue.long ? coordinateValue.long : -0.09]
     const ZOOM_LEVEL = 15;
-    return (
+    return (<>
         <Map center={position} zoom={ZOOM_LEVEL} scrollWheelZoom={false} className={"vh-100"}>
             <TileLayer
                 url={osm.maptiler.url}
@@ -55,11 +57,10 @@ const MapTraker = () => {
             >
 
                 <Polyline pathOptions={limeOptions} positions={polyline} />
-
             </Marker>
 
-
         </Map>
+        </>
     )
 }
 

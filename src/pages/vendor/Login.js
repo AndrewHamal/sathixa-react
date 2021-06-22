@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { apiRegister } from "../../api/vendor/register";
 import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "../../api/vendor/login";
+import {Button, Toast} from "antd-mobile";
 
 const Login = (props) => {
     const [data, setState] = useState({email:'', password:''})
@@ -26,8 +27,8 @@ const Login = (props) => {
         event.preventDefault()
         setLoader(true)
         setDisableSubmit(false)
-        let response =  apiLogin(data)
 
+        let response =  apiLogin(data)
         response
             .then(res => {
                 if(res.status === 200){
@@ -58,9 +59,8 @@ const Login = (props) => {
         let url = new URL( (window.location.href).replace('#', '?'));
         let search_params = url.searchParams
         let access_token = search_params.get('access_token')
-        let googlCallback = apiGoogleCallback(access_token)
-        if(access_token){
-            googlCallback
+        if(access_token !== null){
+            apiGoogleCallback(access_token)
                 .then(res => {
                     if(res.status === 200 ){
                         props.login(res.data.data.token)
@@ -243,11 +243,9 @@ const Login = (props) => {
                                         </div>
                                     </div>
                                     <div className="btn-container mb-2">
-                                        <button className="btn btn-primary w-100" disabled={ disableSubmit ? 'disabled' : '' } type={"submit"}>
+                                        <button className="w-100 btn btn-primary text-white" disabled={ disableSubmit ? 'disabled' : '' }>
                                             { loader ? <i className="fas fa-circle-notch fa-spin text-white fa-lg"></i>
                                                 : 'Submit'}
-
-                                            <div className="ripple"></div>
                                         </button>
                                     </div>
                                     <p>or</p>
@@ -353,7 +351,7 @@ const Login = (props) => {
                                     </div>
                                     <p>or</p>
                                     <div className="btn-container mt-2">
-                                        <button className="btn btn-google w-100  my-auto"><i
+                                        <button className="btn btn-google w-100  my-auto" onClick={redirect}><i
                                             className="fab fa-google my-auto mr-2"/>Signup With
                                             Google
                                         </button>

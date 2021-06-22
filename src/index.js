@@ -6,15 +6,18 @@ import store from "./store";
 import {BrowserRouter as Router} from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 import Echo from "laravel-echo";
+
 require('dotenv').config()
 
 ReactDOM.render(
       <Provider store={store}>
           <Router>
-            <App />
+               <App />
           </Router>
       </Provider>,
   document.getElementById('root')
+
+
 );
 
 serviceWorker.register();

@@ -4,7 +4,9 @@ const initialState = {
     token : '',
     loaded : false,
     categories : [],
-    packages : []
+    packages : [],
+    locations : [],
+    user : []
 }
 
 const tokenSlice = createSlice({
@@ -23,15 +25,27 @@ const tokenSlice = createSlice({
         },
         packageStore(state, action) {
             state.packages = action.payload
+        },
+
+        locationStoreVendor(state, action) {
+            state.locations = action.payload
+        },
+
+        userStore(state, action) {
+            state.user = action.payload
         }
     }
 })
 
 
-export const {packageStore, token, loaded , category} = tokenSlice.actions
+export const { packageStore, token, loaded , category, locationStoreVendor, userStore } = tokenSlice.actions
 
 export const getCategories = state => state.reducers.categories;
 
 export const getPackage = state => state.reducers.packages;
+
+export const getLocationsVendor = state => state.reducers.locations;
+
+export const getUser = state => state.reducers.user;
 
 export default tokenSlice.reducer

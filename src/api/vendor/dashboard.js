@@ -2,7 +2,7 @@ import authClient from '../../services/auth'
 
 export function apiUser() {
     return authClient().get('/')
-        .then( res => res )
+        .then( res => res ).catch( err => err.response)
 }
 
 export function apiCategory() {

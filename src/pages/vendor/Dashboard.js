@@ -1,70 +1,50 @@
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import { imagePath } from '../../services/assetsHelper'
 import 'antd/dist/antd.css';
 import { Drawer } from 'antd';
-import { apiLocation } from '../../api/vendor/register'
 import {useEffect, useState} from "react";
-import { Typography, Space, Button } from 'antd';
+import { Typography, Space, Layout } from 'antd';
+import { Button } from 'antd-mobile';
+import {apiUser} from "../../api/vendor/dashboard";
+import {useDispatch, useSelector} from "react-redux";
 
-const { Text } = Typography;
+import { userStore, getUser } from "../../reducers/reducers";
 
 const Dashboard = () => {
     const [visible, setVisible] = useState(false);
+    const { Text } = Typography;
 
     const showDrawer = () => {
         setVisible(true);
     };
+    const history = useHistory();
+    const dispatch = useDispatch()
+    const userSelector = useSelector(getUser)
 
     const onClose = () => {
         setVisible(false);
     };
 
-    // const dispatch = useDispatch()
-    // const locationValue = useSelector(location).payload.locateReducer
 
-    // useEffect(() => {
-    //     let user = apiUser()
-    //     user.then(res => {
-    //         if(res.status === 200){
-    //             let whole_address = res.data.location.whole_address
-    //             let address = whole_address.split(', ')
-    //             let city = address[2]
-    //             let district = address[3]
-    //             let locationAll = city +', '+ district
-    //             // dispatch(location(locationAll))
-    //         }
-    //     })
-    //
-    //     navigator.geolocation.getCurrentPosition((res) => {
-    //         let lat = res.coords.latitude
-    //         let long = res.coords.longitude
-    //         let locationUpdate = apiLocation(lat, long)
-    //         locationUpdate
-    //             .then(res => {
-    //                 if(res.status === 200) {
-    //                     res['city'] = res.data.address.city
-    //                     res['state'] = res.data.address.state
-    //                     res['whole_address'] = res.data.display_name
-    //                     res['lat'] = lat
-    //                     res['long'] = long
-    //                     let locationUpdate = apiLocationUpdate(res)
-    //
-    //                     locationUpdate
-    //                         .then(res => {
-    //                             if (res.status === 201) {
-    //                                 dispatch(location(res.data.data.city))
-    //                             }
-    //                         })
-    //                 }
-    //             })
-    //     })
-    // },[locationValue])
+    useEffect(() => {
+        if(userSelector.length === 0) {
+            apiUser().then(res => {
+                if (res.status === 200){
+                    if(res.data.location !== null) {
+                        dispatch(userStore(res.data))
+                    }
+                }
+
+            })
+        }
+    },[userSelector])
 
     return (
+        <Layout>
         <section className="container mt-4 px-2 pb-4" >
             <Drawer
                 title="Basic Drawer"
-                placement="right"
+                placement="left"
                 closable={false}
                 onClose={onClose}
                 visible={visible}
@@ -78,8 +58,8 @@ const Dashboard = () => {
                     <div className="d-flex">
                         <i className="fas fa-map-marker-alt red-gps" />
                         <div className="ml-1">
-                            <p className="p-location-12">Your current location</p>
-                            <p className="p-location-14">
+                            <p className="p-location-12 pr-1">{ userSelector?.location?.whole_address.substring(0,80) || "Your current location"}</p>
+                            <p className="p-location-14" onClick={() => history.push('/map-search')}>
                                 Add location
                             </p>
                         </div>
@@ -96,10 +76,7 @@ const Dashboard = () => {
                     <p className="sathixa-intro-p">You can now send your packages upto 10 km
                         within 30min using sathicha</p>
                     <div className="btn-container text-center mt-2">
-                        <Link className={"w-100 my-3"} to={"/package-form"}>
-                            {/*<Button>*/}
-                                <Button type={"primary"} size={"large"} className={"w-100 h-48 border-15"}>Send Package</Button>
-                        </Link>
+                        <Button className={"w-100 my-3 w-100 border-15 text-white"} onClick={ () => history.push("/package-form")} type={"primary"} size={"large"}>Send Package</Button>
                     </div>
                 </div>
 
@@ -122,11 +99,11 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                <div className="d-flex flex-wrap row justify-content-between mt-4">
+                <div className="d-flex flex-wrap row px-2 justify-content-between mt-4">
                     <div className="col-6 p-2 text-center">
                         <div className={"order-details-box padding-10  py-4 border"}>
                             <Text className="order-details-heading" type={"secondary"}>Order Value</Text>
-                            <div>
+                            <div className={"mt-1"}>
                                 <span className="package-options-p font-weight-500 ">Rs 50,000</span>
                             </div>
                         </div>
@@ -134,7 +111,7 @@ const Dashboard = () => {
                     <div className="box col-6 p-2 text-center ">
                         <div className={"order-details-box padding-10  py-4 border"}>
                             <Text className="order-details-heading" type={"secondary"}>Delivered Value</Text>
-                            <div>
+                            <div className={"mt-1"}>
                                 <span className="package-options-p font-weight-500 ">Rs 50,000</span>
                             </div>
                         </div>
@@ -143,7 +120,7 @@ const Dashboard = () => {
                     <div className="box col-6 p-2 text-center">
                         <div className={"order-details-box padding-10  py-4 border"}>
                             <Text className="order-details-heading" type={"secondary"}>Returned Value</Text>
-                            <div>
+                            <div className={"mt-1"}>
                                 <span className="package-options-p font-weight-500 ">Rs 50,000</span>
                             </div>
                         </div>
@@ -151,7 +128,7 @@ const Dashboard = () => {
                     <div className="box col-6 p-2 text-center">
                         <div className={"order-details-box py-4 padding-10 border"}>
                             <Text className="order-details-heading" type={"secondary"}>Pending Value</Text>
-                            <div>
+                            <div className={"mt-1"}>
                                 <span className="package-options-p font-weight-500">Rs 50,000</span>
                             </div>
                         </div>
@@ -159,7 +136,7 @@ const Dashboard = () => {
                 </div>
             </div>
         </section>
-
+        </Layout>
 
     )
 }

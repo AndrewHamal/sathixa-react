@@ -7,14 +7,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { submitPackage } from "../../api/vendor";
 import { Upload, Button, Slider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { List, InputItem, Toast } from 'antd-mobile';
+import { packageStore } from "../../reducers/reducers";
+import { createForm } from 'rc-form';
+
+const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
+let moneyKeyboardWrapProps;
+
+if (isIPhone) {
+    moneyKeyboardWrapProps = {
+        onTouchStart: e => e.preventDefault(),
+    };
+}
 
 const SendPackage = () => {
 
     const [volume, setVolume] = useState( 2)
+    const [value, setValue] = useState();
     const [fileAll, setFile] = useState({ files : [] })
     const [toggle, setToggle] = useState(false)
     const [disable, setDisable] = useState(false)
     const [error, setError] = useState([]);
+    const [errorPhone, setErrorPhone] = useState(null);
     const history = useHistory()
 
     const dispatch = useDispatch()
@@ -41,7 +55,6 @@ const SendPackage = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-
         setDisable(true)
 
         let formData = new FormData(event.target)
@@ -57,6 +70,7 @@ const SendPackage = () => {
                     document.getElementById('form').reset()
                     setError([])
                     history.push('/success')
+                    dispatch(packageStore([]))
                     return
                 }
 
@@ -86,13 +100,32 @@ const SendPackage = () => {
         }
     },[getCaterogies])
 
+    const phoneChange = (value) => {
+       setValue(value)
+        if (value.replace(/\s/g, '').length < 11) {
+            setErrorPhone({
+                hasError: true,
+            });
+        } else {
+            setErrorPhone({
+                hasError: false,
+            });
+        }
+    }
+
+    const onErrorClick = () => {
+        if (errorPhone) {
+            Toast.info('Please enter 11 digits');
+        }
+    }
+
 
     return (
-        <section className="container mt-5 pb-4 px-4" id={"sendPackageModal"}>
-        <div className="col-md-12">
+        <section className="container p-4" id={"sendPackageModal"}>
+        <div className="col-md-12 p-2">
             <div className="d-flex justify-content-between mb-3">
-                <i className="fas fa-arrow-left"  onClick={() =>  history.goBack()}/>
-                <p className="main-p" onClick={() =>  history.goBack()}>cancel</p>
+                <i className="fas fa-arrow-left"  onClick={() =>  history.push('dashboard')}/>
+                <p className="main-p" onClick={() =>  history.push('/dashboard')}>cancel</p>
             </div>
             <form onSubmit={handleSubmit} id={"form"}>
                 <div className="form-group">
@@ -105,8 +138,8 @@ const SendPackage = () => {
                             ))
                         }
                     </select>
-                    {/*{ console.log( typeof error.category_id ) }*/}
-                    <small className={"text-danger font-11"}>{ typeof error.category_id !== "undefined" ? error.category_id : '' }</small>
+
+                    { error.category_id ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.category_id} </small></div> : '' }
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleFormControlSelect1">Number of Packages?</label>
@@ -117,38 +150,63 @@ const SendPackage = () => {
                             ))
                         }
                     </select>
-                    <small className={"text-danger font-11"}>{ error.no_of_package ? error.no_of_package : '' }</small>
+                    { error.no_of_package ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.no_of_package} </small></div> : '' }
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Enter receiver's name</label>
-                    <input type="text" className="form-control" name={"receiver_name"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shivam Rijal" />
-                    <small className={"text-danger font-11"}>{ error.receiver_name ? error.receiver_name : '' }</small>
+                    <input type="text" className="form-control" name={"receiver_name"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shivam Rijal" required/>
+                    { error.receiver_name ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.receiver_name} </small></div> : '' }
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Receiver's address</label>
-                    <input type="text" className="form-control" name={"receiver_address"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shantinagar, Kathmandu" />
-                    <small className={"text-danger font-11"}>{ error.receiver_address ? error.receiver_address : '' }</small>
+                    <input type="text" className="form-control" name={"receiver_address"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shantinagar, Kathmandu" required/>
+                    { error.receiver_address ? <div className={"mt-1"}><small className={"text-danger font-11 lh-1"}> {error.receiver_address} </small></div> : '' }
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Phone number</label>
-                    <input type="text" minLength={8} className="form-control" name={"receiver_phone"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={+977} />
-                    <small className={"text-danger font-11"}>{ error.receiver_phone ? error.receiver_phone : '' }</small>
+                    <InputItem
+                        type={"phone"}
+                        error={errorPhone?.hasError}
+                        placeholder="977"
+                        onChange={phoneChange}
+                        clear
+                        minLength={8}
+                        value={value}
+                        name={"receiver_phone"}
+                        className="form-control"
+                        onErrorClick={onErrorClick}
+                        required
+                    ></InputItem>
+
+                    { error.receiver_phone ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.receiver_phone} </small></div> : '' }
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Product Price</label>
-                    <input type="number" className="form-control" name={"product_price"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Rs" />
-                    <small className={"text-danger font-11"}>{ error.product_price ? error.product_price : '' }</small>
+                    <InputItem
+                        type={"text"}
+                        placeholder="Price"
+                        clear
+                        name={"product_price"}
+                        className="form-control"
+                        required
+                    ></InputItem>
+
+                    { error.product_price ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.product_price} </small></div> : '' }
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Weights in kg</label>
 
                     <Slider
+                        type={"primary"}
                         max={10}
                         defaultValue={volume}
                         className={"m-0"}
                         onChange={handleOnChange}
                     />
-                    <small className={"text-danger font-11"}>{ error.weight ? error.weight : '' }</small>
+                    { error.weight ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.weight} </small></div> : '' }
                 </div>
                 
                 <div className="form-group">
