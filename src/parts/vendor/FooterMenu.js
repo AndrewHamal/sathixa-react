@@ -17,7 +17,7 @@ const FooterMenu = () => {
     return (
         <div className="footerMenu" style={{ position: 'fixed', width: '100%', bottom: 0 }}>
             <TabBar
-                unselectedTintColor="#949494"
+                unselectedTintColor="#aeb7bf"
                 tintColor="#DB2B39"
                 barTintColor="white"
                 tabBarPosition="bottom"
@@ -35,21 +35,30 @@ const FooterMenu = () => {
                     />
 
                 <TabBar.Item
+                    title="Inbox"
+                    key="Life"
+                    icon={ <i className="fa fa-comment-alt fa-lg"></i> }
+                    selectedIcon={ <i className="fa fa-comment-alt fa-lg active"></i> }
+                    selected={path === '/inbox' ? true : false}
+                    onPress={() => {history.push('/inbox')}}
+                    />
+
+                <TabBar.Item
                     title="Package"
                     key="package"
-                    icon={ <i className="fa fa-briefcase fa-lg "></i> }
-                    selectedIcon={ <i className="fa fa-briefcase fa-lg active"></i> }
+                    icon={ <i className="fa fa-box-open fa-lg "></i> }
+                    selectedIcon={ <i className="fa fa-box-open fa-lg active"></i> }
                     selected={path === '/package' ? true : false}
                     onPress={() => {history.push('/package')}}
                 />
 
                 <TabBar.Item
-                    title="Wallet"
-                    key="wallet"
-                    icon={ <i className="fa fa-wallet fa-lg"></i> }
-                    selectedIcon={ <i className="fa fa-wallet fa-lg active"></i> }
-                    selected={path === '/wallet' ? true : false}
-                    onPress={() => {history.push('/wallet')}}
+                    title="Profile"
+                    key="profile"
+                    icon={ <i className="fa fa-user fa-lg"></i> }
+                    selectedIcon={ <i className="fa fa-user fa-lg active"></i> }
+                    selected={path === '/profile' ? true : false}
+                    onPress={() => {history.push('/profile')}}
                 />
 
 

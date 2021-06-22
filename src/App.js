@@ -19,6 +19,16 @@ import './assets/global.css';
 import './antdTheme.less';
 import MapSearch from "./pages/vendor/MapSearch";
 import Pusher from "pusher-js"
+import Notif from "./pages/rider/Notif";
+import Delivery from "./pages/rider/Delivery";
+import Profile from "./pages/rider/Profile";
+import ProfileEdit from "./pages/rider/ProfileEdit";
+import Pack from "./pages/rider/Pack";
+import Inbox from "./pages/rider/Inbox";
+import Documents from "./pages/rider/Documents";
+import RiderAccept from "./pages/rider/RiderAccept";
+import ProfileRider from "./pages/rider/ProfileRider";
+import PackageTrack from "./pages/rider/PackageTrack";
 
 const App = () => {
 
@@ -114,10 +124,20 @@ const App = () => {
 
             <div className={ loggedIn && window.location.pathname !== "/map-search" ? 'App mb-100' : 'App'} >
               <Switch>
+                <Route exact path={"/notif"} component={Notif} />
+                <Route exact path={"/delivery"} component={Delivery} />
+                <Route exact path={"/Profile"} component={Profile} />
+                <Route exact path={"/ProfileEdit"} component={ProfileEdit} />
+                <Route exact path={"/Pack"} component={Pack} />
+                <Route exact path={"/PackageTrack"} component={PackageTrack} />
+                <Route exact path={"/Inbox"} component={Inbox} />
+                <Route exact path={"/Documents"} component={Documents} />
+                <Route exact path={"/RiderAccept"} component={RiderAccept} />
+                <Route exact path={"/ProfileRider"} component={ProfileRider} />
 
                   /*vendo routes */
-
                   <Route exact path={'/'} />
+                  
                   <Route exact render={props =>
                       !loggedIn ? (
                       <Login {...props} login={login} />
