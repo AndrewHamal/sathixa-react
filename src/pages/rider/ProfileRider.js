@@ -51,7 +51,7 @@ const ProfileRider = () => {
           </div>
         </div>
       </Link>
-      <Link to="/ProfileEdit">
+      <Link to="/SavedAddress">
         <div className="white-card m-2">
           <p className="heading-sm">ADDRESS</p>
           <div className="d-flex mt-2">
