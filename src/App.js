@@ -25,8 +25,10 @@ import ProfileEdit from "./pages/vendor/ProfileEdit";
 import Pack from "./pages/vendor/Pack";
 import Inbox from "./pages/vendor/Inbox";
 import Documents from "./pages/vendor/Documents";
+import DocumentsRider from "./pages/vendor/DocumentsRider";
 import RiderAccept from "./pages/vendor/RiderAccept";
 import ProfileRider from "./pages/vendor/ProfileRider";
+import SavedAddress from "./pages/vendor/SavedAddress";
 const App = () => {
   const ref = useRef(null);
   const [loggedIn, setLoggedIn] = React.useState(
@@ -108,8 +110,10 @@ const App = () => {
           <Route exact path={"/PackageTrack"} component={PackageTrack} />
           <Route exact path={"/Inbox"} component={Inbox} />
           <Route exact path={"/Documents"} component={Documents} />
+          <Route exact path={"/DocumentsRider"} component={DocumentsRider} />
           <Route exact path={"/RiderAccept"} component={RiderAccept} />
           <Route exact path={"/ProfileRider"} component={ProfileRider} />
+          <Route exact path={"/SavedAddress"} component={SavedAddress} />
           <Route
             exact
             render={(props) =>
