@@ -19,7 +19,7 @@ const { Step } = Steps;
 
 const { Header, Content, Footer } = Layout;
 
-const Profile = () => {
+const ProfileRider = () => {
   const history = useHistory();
 
   return (
@@ -51,6 +51,15 @@ const Profile = () => {
           </div>
         </div>
       </Link>
+      <Link to="/ProfileEdit">
+        <div className="white-card m-2">
+          <p className="heading-sm">ADDRESS</p>
+          <div className="d-flex mt-2">
+            <i className="far fa-heart text-red my-auto mr-2" />
+            <p className="text-normal">Saved Address</p>
+          </div>
+        </div>
+      </Link>
       <Link to="./Documents">
         <div className="white-card m-2">
           <p className="heading-sm">DOCUMENTS</p>
@@ -68,6 +77,25 @@ const Profile = () => {
           <p className="text-normal">Get Discounts</p>
         </div>
       </div>
+      <Link to="/ProfileEdit">
+        <div className="white-card m-2">
+          <p className="heading-sm">VEHICLES</p>
+          <div className="d-flex mt-2">
+            <i className="fas fa-motorcycle text-red my-auto mr-2" />
+            <p className="text-normal">Vehicles Info</p>
+          </div>
+        </div>
+      </Link>
+      <Link to="/ProfileEdit">
+        <div className="white-card m-2">
+          <p className="heading-sm">SETTINGS</p>
+          <div className="d-flex mt-2">
+            <i className="fas fa-user text-red my-auto mr-2" />
+            <p className="text-normal">Permissons</p>
+          </div>
+        </div>
+      </Link>
+
       <div className="white-card m-2">
         <p className="heading-sm">OTHERS</p>
         <div className="d-flex mt-2">
@@ -89,4 +117,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileRider;

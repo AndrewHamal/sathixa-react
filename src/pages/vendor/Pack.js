@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "antd";
 
@@ -39,40 +39,44 @@ const Pack = () => {
         <div className="site-layout-background">
           <Tabs defaultActiveKey="1" onChange={callback}>
             <TabPane tab="Ongoing" key="1">
-              <div className="package-card ">
-                <div className="d-flex  flex-wrap">
-                  <img src={packageimg} alt="" className="width-pack" />
-                  <table className="table ml-2 my-auto">
-                    <tbody>
-                      <tr>
-                        <td className="font-14 font-weight-600">
-                          Akkal Prasad
-                        </td>
-                        <td className="font-14 font-weight-600 text-align-end">
-                          x1
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-small">Categories</td>
-                        <td className="p-small p-small-sharp ">Electronics</td>
-                      </tr>
-                      <tr>
-                        <td className="p-small">Weight</td>
-                        <td className="p-small p-small-sharp ">2KG</td>
-                      </tr>
-                      <tr>
-                        <td className="p-small font-14">Price</td>
-                        <td className="vendor-package-price font-14  ">
-                          Rs 342
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div className="my-auto ml-auto">
-                    <p className="status-active font-12">Processing</p>
+              <Link to="/Delivery">
+                <div className="package-card ">
+                  <div className="d-flex  flex-wrap">
+                    <img src={packageimg} alt="" className="width-pack" />
+                    <table className="table ml-2 my-auto">
+                      <tbody>
+                        <tr>
+                          <td className="font-14 font-weight-600">
+                            Akkal Prasad
+                          </td>
+                          <td className="font-14 font-weight-600 text-align-end">
+                            x1
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="p-small">Categories</td>
+                          <td className="p-small p-small-sharp ">
+                            Electronics
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="p-small">Weight</td>
+                          <td className="p-small p-small-sharp ">2KG</td>
+                        </tr>
+                        <tr>
+                          <td className="p-small font-14">Price</td>
+                          <td className="vendor-package-price font-14  ">
+                            Rs 342
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div className="my-auto ml-auto">
+                      <p className="status-active font-12">Processing</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
               <div className="package-card my-3">
                 <div className="d-flex  flex-wrap">
                   <img src={packageimg} alt="" className="width-pack" />

@@ -1,24 +1,35 @@
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "antd";
+import { PageHeader } from "antd";
+import { Layout, Menu, Breadcrumb } from "antd";
 
 import PackgeImg from "../../assets/vendor/packageimg.svg";
 import { Steps } from "antd";
 
 const { Step } = Steps;
+const { Header, Content, Footer } = Layout;
 
 const Delivery = () => {
   const history = useHistory();
 
   return (
-    <section className="container  px-1">
-      <div className="col-md-12">
-        <div className="top-nav-pro position-relative trans-top-div">
-          <i className="fas fa-arrow-left text-white my-auto position-absolute arrow-left " />
-          <p className="center-text  ">Delivery Check</p>
-        </div>
-        <div className="overflow-card-profile">
-          <div className="package-card ">
+    <Layout>
+      <PageHeader
+        style={{ position: "fixed", zIndex: 1, width: "100%" }}
+        className="site-page-header bg-red "
+        onBack={() => "null"}
+        title="Ongoing"
+      />
+      <Content
+        className="site-layout"
+        style={{
+          padding: "0 25px",
+          marginTop: 67,
+        }}
+      >
+        <div className="site-layout-background">
+          <div className="package-card mt-4">
             <div className="d-flex  flex-wrap">
               <img src={PackgeImg} alt="" className="width-pack" />
               <table className="table ml-2 my-auto">
@@ -55,9 +66,13 @@ const Delivery = () => {
               <Step title="Waiting" description="This is a description." />
             </Steps>
           </div>
+
+          <Button type="default mt-3" block>
+            Completed
+          </Button>
         </div>
-      </div>
-    </section>
+      </Content>
+    </Layout>
   );
 };
 

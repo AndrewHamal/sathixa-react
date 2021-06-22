@@ -21,8 +21,12 @@ import Pusher from "pusher-js";
 import Notif from "./pages/vendor/Notif";
 import Delivery from "./pages/vendor/Delivery";
 import Profile from "./pages/vendor/Profile";
+import ProfileEdit from "./pages/vendor/ProfileEdit";
 import Pack from "./pages/vendor/Pack";
-
+import Inbox from "./pages/vendor/Inbox";
+import Documents from "./pages/vendor/Documents";
+import RiderAccept from "./pages/vendor/RiderAccept";
+import ProfileRider from "./pages/vendor/ProfileRider";
 const App = () => {
   const ref = useRef(null);
   const [loggedIn, setLoggedIn] = React.useState(
@@ -99,8 +103,13 @@ const App = () => {
           <Route exact path={"/notif"} component={Notif} />
           <Route exact path={"/delivery"} component={Delivery} />
           <Route exact path={"/Profile"} component={Profile} />
+          <Route exact path={"/ProfileEdit"} component={ProfileEdit} />
           <Route exact path={"/Pack"} component={Pack} />
           <Route exact path={"/PackageTrack"} component={PackageTrack} />
+          <Route exact path={"/Inbox"} component={Inbox} />
+          <Route exact path={"/Documents"} component={Documents} />
+          <Route exact path={"/RiderAccept"} component={RiderAccept} />
+          <Route exact path={"/ProfileRider"} component={ProfileRider} />
           <Route
             exact
             render={(props) =>
