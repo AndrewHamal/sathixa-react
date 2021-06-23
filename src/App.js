@@ -31,6 +31,10 @@ import ProfileRider from "./pages/rider/ProfileRider";
 import PackageTrack from "./pages/rider/PackageTrack";
 import DocumentsRider from "./pages/rider/DocumentsRider";
 import SavedAddress from "./pages/rider/SavedAddress";
+import PackageRider from "./pages/rider/PackageRider";
+import SubmitTicket from "./pages/rider/SubmitTicket";
+import AllTicket from "./pages/rider/AllTicket";
+import ActiveTicket from "./pages/rider/ActiveTicket";
 
 const App = () => {
   const ref = useRef(null);
@@ -138,6 +142,10 @@ const App = () => {
           <Route exact path={"/ProfileRider"} component={ProfileRider} />
           <Route exact path={"/DocumentsRider"} component={DocumentsRider} />
           <Route exact path={"/SavedAddress"} component={SavedAddress} />
+          <Route exact path={"/PackageRider"} component={PackageRider} />
+          <Route exact path={"/SubmitTicket"} component={SubmitTicket} />
+          <Route exact path={"/AllTicket"} component={AllTicket} />
+          <Route exact path={"/ActiveTicket"} component={ActiveTicket} />
           /*vendo routes */
           <Route exact path={"/"} />
           <Route

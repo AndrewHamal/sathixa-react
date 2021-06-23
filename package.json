@@ -28,6 +28,7 @@
     "pusher-js": "4.3",
     "rc-form": "^2.4.12",
     "react": "^17.0.2",
+    "react-canvas-draw": "^1.1.1",
     "react-content-loader": "^6.0.3",
     "react-dom": "^17.0.2",
     "react-infinite-scroll-component": "^4.1.0",
