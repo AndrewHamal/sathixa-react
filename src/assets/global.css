@@ -92,6 +92,22 @@ hr {
   font-size: 17px !important;
 }
 
+.font-20 {
+  font-size: 20px !important;
+}
+
+.font-22 {
+  font-size: 22px !important;
+}
+
+.font-24 {
+  font-size: 24px !important;
+}
+
+.font-27 {
+  font-size: 27px !important;
+}
+
 h3 {
   color: #401f21;
   font-size: 17px;
@@ -546,6 +562,7 @@ div.am-segment-item-selected {
 }
 .ticket-img {
   height: 44px;
+  width: 44px;
   border-radius: 50%;
   object-fit: cover;
   object-position: top;
@@ -1180,6 +1197,9 @@ td {
 .f-w-600 {
   font-weight: 600;
 }
+.f-w-700 {
+  font-weight: 700;
+}
 .white-card {
   background-color: white;
   padding: 10px;
@@ -1344,4 +1364,35 @@ td {
 .ant-badge-status-dot.ant-badge-status-error {
   height: 12px;
   width: 12px;
+}
+
+.recieve {
+  background-color: #db2b39;
+
+  width: fit-content;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.send {
+  background-color: white;
+
+  width: fit-content;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #b8bcc0a8;
+  font-size: 12px;
+}
+
+.recieve p {
+  line-height: 1.4;
+  color: white;
+}
+.center-me {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }

@@ -35,6 +35,8 @@ import PackageRider from "./pages/rider/PackageRider";
 import SubmitTicket from "./pages/rider/SubmitTicket";
 import AllTicket from "./pages/rider/AllTicket";
 import ActiveTicket from "./pages/rider/ActiveTicket";
+import Chat from "./pages/rider/Chat";
+import Splash1 from "./pages/rider/Splash1";
 
 const App = () => {
   const ref = useRef(null);
@@ -146,6 +148,8 @@ const App = () => {
           <Route exact path={"/SubmitTicket"} component={SubmitTicket} />
           <Route exact path={"/AllTicket"} component={AllTicket} />
           <Route exact path={"/ActiveTicket"} component={ActiveTicket} />
+          <Route exact path={"/Chat"} component={Chat} />
+          <Route exact path={"/Splash1"} component={Splash1} />
           /*vendo routes */
           <Route exact path={"/"} />
           <Route
