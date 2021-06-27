@@ -26,7 +26,6 @@ const Inbox = () => {
       <PageHeader
         style={{ position: "fixed", zIndex: 1, width: "100%" }}
         className="site-page-header bg-red "
-        onBack={() => null}
         title="Inbox"
       />
 

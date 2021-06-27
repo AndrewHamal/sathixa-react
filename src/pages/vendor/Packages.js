@@ -4,7 +4,9 @@ import {getPackage, packageStore} from "../../reducers/reducers";
 import {useDispatch, useSelector} from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {SegmentedControl} from "antd-mobile";
-import {Skeleton} from "antd";
+import {Skeleton, Layout, PageHeader} from "antd";
+
+const { Header, Content, Footer } = Layout;
 
 const Packages = () => {
     const dispatch = useDispatch();
@@ -67,13 +69,21 @@ const Packages = () => {
     }, [])
 
 
-    return <div>
+    return (
+    <Layout>
 
-    <section className="container mt-3 px-1">
-        <div className="col-md-12 pb-2">
+    <Content
+        className="site-layout"
+        style={{
+        padding: "0 14px",
+        marginTop: 14,
+        }}
+    >
+    <section className="">
+        <div className="pb-2">
             <div className="d-flex justify-content-between mb-3">
                 <p className="p-location-14">Satichha</p>
-                <i className="fas fa-user-circle my-auto" />
+                {/* <i className="fas fa-user-circle fa-lg my-auto" /> */}
             </div>
             <div className="form-group my-3 position-relative">
                 <i className="fas fa-search position-absolute " />
@@ -81,7 +91,7 @@ const Packages = () => {
             </div>
             <div>
                 <p className="font-17 font-weight-bold">Your Packages</p>
-                <div className="d-flex overflow-y-scroll hide-scrollbar">
+                <div className="d-flex overflow-y-scroll hide-scrollbar py-2">
                     <div className="paackage-card mt-1">
                         <div className="d-flex">
                             <svg id="baseline-how_to_reg-24px" xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24">
@@ -236,7 +246,7 @@ const Packages = () => {
                     {
                         packageValue.length > 0 ?
                             packageValue.map((res,key) => (
-                                <div key={key} className="total-order-card sucess-vendor mb-2 d-flex justify-content-between">
+                                <div key={key} className="total-order-card ap mb-2 d-flex justify-content-between">
                                     <div className="d-flex">
                                         <div className="store-border d-flex p-2">
                                             <i className="fas fa-store m-auto" />
@@ -263,7 +273,9 @@ const Packages = () => {
             </div>
         </div>
     </section>
-    </div>
+    </Content>
+    </Layout>
+    )
 }
 
 export default Packages

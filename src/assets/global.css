@@ -7,7 +7,7 @@
 }
 .map-container {
     position: relative;
-    height: 100vh;
+    height: calc(100vh - 87px)!important;
 }
 
 .leaflet-container {
@@ -55,7 +55,7 @@ html {
     font-family: "Open Sans", sans-serif!important;
     max-width: 100vw;
     /*height: 100vh;*/
-    background-color: #fff!important;
+    background-color: #fafafa !important;
 }
 
 .bg-red {
@@ -89,6 +89,9 @@ hr {
 }
 .font-14 {
     font-size: 14px !important;
+}
+.font-16 {
+    font-size: 16px !important;
 }
 .font-17 {
     font-size: 17px !important;
@@ -167,7 +170,23 @@ h3 {
     width: 12rem;
 }
 
+.am-notice-bar {
+    background: #fafafa!important;
+color: unset!important;
+}
 
+.site-page-header-white, .site-page-header{
+    padding: 14px!important;
+    box-shadow: 0px 5px 12px rgb(0 0 0 / 7%)!important;
+}
+
+.ant-page-header-heading-extra {
+    display: flex;
+}
+
+.ant-page-header-heading-title {
+    margin: 0!important;
+}
 
 .btn-google,
 .btn-google:active,
@@ -461,10 +480,16 @@ div.am-segment-item-selected {
 .total-order-card {
     padding: 8px;
     border-radius: 5px;
+    background: #f4f4f4!important;
+}
+
+.site-page-header-white .ant-page-header-heading, .site-page-header-white .ant-page-header-heading-left, .site-page-header-white .ant-page-header-heading-title  {
+    width: 100%;
 }
 
 .sucess-vendor {
-    background: #f1fff8;
+    background: #fff;
+    border-radius: 14px;
 }
 .rejected-vendor {
     background: #fce7e7;
@@ -486,12 +511,13 @@ div.am-segment-item-selected {
 
 .login-input {
     font-size: 18px;
-    padding: 10px 10px 2px 5px;
+    padding: 10px 10px 8px 5px;
     display: block;
     width: 100%;
+    background: #fafafa !important;
     -webkit-border-radius: 0%;
     border: none;
-    border-bottom: 1px solid #495867;
+    border-bottom: 1px solid rgba(0,0,0,.3);
 }
 
 .reply {
@@ -518,7 +544,7 @@ div.am-segment-item-selected {
 
 .login-input:focus ~ .login-label,
 .login-input:valid ~ .login-label {
-    top: -20px;
+    top: -13px;
     font-size: 14px;
     color: #25313d;
 }
@@ -821,8 +847,8 @@ div.am-segment-item-selected {
 
 .options-container-package {
   box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.07);
-  margin-left: -1.4rem;
-  margin-right: -1.4rem;
+  margin-left: -14px;
+  margin-right: -14px;
   padding: 10px 20px;
 }
 .padding-10 {
@@ -841,8 +867,10 @@ div.am-segment-item-selected {
 
 .order-details-box {
     border-radius: 15px;
-    /*box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;*/
-    /*width: 135px;*/
+    background: transparent linear-gradient(
+    180deg
+    , #ffffff 0%, #f8f6f7 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000012;
 }
 
 .order-details-heading {
@@ -943,8 +971,12 @@ div.am-segment-item-selected {
 }
 
 .footerMenu i {
-    font-size: 23px!important;
+    font-size: 20px!important;
     opacity: .2;
+}
+
+.am-notice-bar-content {
+    margin: 0!important;
 }
 
 .am-tab-bar-bar::before {
@@ -1017,6 +1049,10 @@ div.am-segment-item-selected {
 .am-segment-item,.am-segment {
     border-radius: 0!important;
     border: unset!important;
+}
+
+.am-segment-item:first-child{
+    padding: 7px 0;
 }
 
 .custom-file {
@@ -1244,4 +1280,75 @@ td {
 
 .map-bg {
   background-image: url("https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/pass/GoogleMapTA.jpg");
+}
+
+.accept-pop {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 103px;
+}
+
+/* .common-map .leaflet-left .leaflet-control{ 
+    position: absolute;
+    top: -1px;
+    width: -webkit-fill-available;
+    margin: 14px;
+    width: 80%;
+    border-radius: 70px;
+} */
+
+.common-map .leaflet-container {
+    height: calc(100vh - 83px);
+}
+
+.common-map .leaflet-search-wrap.leaflet-control {
+    bottom: unset!important;
+    top: 0px!important;
+    width: 75%;
+}
+.common-map .search-control {
+    padding: 0;
+}
+.common-map .search-control-wrap {
+    border-radius: 37px!important;
+}
+
+.common-map .search-control-input::placeholder {
+    font-size: 16px!important;
+}
+
+.common-map .search-input{
+    top: -2px;
+    background: transparent;
+    font-size: 15px!important;
+}
+
+.profile-pop {
+    position: absolute;
+    z-index: 9999;
+    right: 6px;
+    top: 16px;
+}
+
+.common-map .search-control {
+    background: transparent!important;
+}
+
+.common-map .ant-avatar {
+    width: 38px!important;
+    height: 38px!important;
+}
+
+.common-map .search-control-info-wrapper {
+    top: 40px!important;
+    bottom: unset;
+    left: 0;
+    border-radius: 18px;
+}
+
+.rider-accept {
+    position: absolute;
+    z-index: 999;
+    bottom: 16px;
 }

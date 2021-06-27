@@ -3,7 +3,7 @@ import authClient from "../../services/auth";
 import axios from "axios";
 
 export const apiRegister = (data) => {
-    return apiClient.post('vendor/register', data)
+    return apiClient.post('api/vendor/register', data)
         .then(response => {
             return response
         })
@@ -20,7 +20,7 @@ export const apiLocation = (lat, long) => {
 }
 
 export const apiLocationUpdate = (res) => {
-    return authClient().post('/update-vendor',res)
+    return authClient.post('/update-vendor',res)
         .then(res => {
             return res
     })

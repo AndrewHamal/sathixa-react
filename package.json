@@ -28,6 +28,8 @@
     "pusher-js": "4.3",
     "rc-form": "^2.4.12",
     "react": "^17.0.2",
+    "react-app-rewire-alias": "^1.0.3",
+    "react-app-rewired": "^2.1.8",
     "react-content-loader": "^6.0.3",
     "react-dom": "^17.0.2",
     "react-infinite-scroll-component": "^4.1.0",
@@ -42,12 +44,13 @@
     "react-select": "^4.3.1",
     "react-top-loading-bar": "^2.0.1",
     "redux-devtools-extension": "^2.13.9",
+    "uifx": "^2.0.7",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "HTTPS=true SSL_CRT_FILE=./.cert/cert.pem SSL_KEY_FILE=./.cert/key.pem craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "craco start",
+    "build": "react-app-rewired craco build",
+    "test": "react-app-rewired craco test",
     "eject": "react-scripts eject",
     "start-sw": "http-server ./build"
   },
@@ -68,6 +71,10 @@
     "http-server": "^0.12.3",
     "less": "^3.13.1",
     "less-loader": "^6.2.0",
+    "react-app-rewire-alias": "^1.0.3",
+    "react-app-rewired": "^2.1.8",
+    "react-test-renderer": "^17.0.2",
+    "redux-devtools": "^3.7.0",
     "typescript": "3.8.3"
   }
 }

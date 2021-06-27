@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { createElement, useState } from "react";
 import 'react-rangeslider/lib/index.css'
 import { useHistory } from "react-router-dom";
 import { apiCategory } from "../../api/vendor/dashboard"
 import { category, getCategories } from "../../reducers/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { submitPackage } from "../../api/vendor";
-import { Upload, Button, Slider } from 'antd';
+import { Upload, Button, Slider, Layout, PageHeader, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { List, InputItem, Toast } from 'antd-mobile';
-import { packageStore } from "../../reducers/reducers";
+import { packageStore, storePackageForm, getPackageForm } from "@/reducers/reducers";
 import { createForm } from 'rc-form';
 
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
@@ -19,6 +19,8 @@ if (isIPhone) {
         onTouchStart: e => e.preventDefault(),
     };
 }
+
+const { Header, Content, Footer } = Layout;
 
 const SendPackage = () => {
 
@@ -31,6 +33,8 @@ const SendPackage = () => {
     const [errorPhone, setErrorPhone] = useState(null);
     const history = useHistory()
 
+    const packageFormSelector = useSelector(getPackageForm)
+
     const dispatch = useDispatch()
     const getCaterogies = useSelector(getCategories)
 
@@ -38,6 +42,7 @@ const SendPackage = () => {
         setFile(prevState => ({
             files: [...prevState.files, file]
         }))
+
         return false;
     }
 
@@ -51,6 +56,7 @@ const SendPackage = () => {
 
     const handleOnChange = (value) => {
         setVolume( parseInt(value) )
+        dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector?.value, ['weight']: value } }))
     }
 
     const handleSubmit = (event) => {
@@ -59,24 +65,45 @@ const SendPackage = () => {
 
         let formData = new FormData(event.target)
 
-        fileAll.files.forEach((image, i) => {
-            formData.append('image[]', image);
+        Object.entries(packageFormSelector?.value?.receiver_address).map(v => {
+            formData.append(`location[${v[0]}]`, v[1]);
         })
-        formData.append('weight' , volume)
-        submitPackage(formData)
-            .then(res => {
-                if(res.status === 202) {
-                    setDisable(false)
-                    document.getElementById('form').reset()
-                    setError([])
-                    history.push('/success')
-                    dispatch(packageStore([]))
-                    return
-                }
 
-                setDisable(false)
-                setError(res.data.errors)
+        if(typeof packageFormSelector?.value?.files !== "undefined" && packageFormSelector?.value?.files?.length != 0){ 
+            Object.entries(packageFormSelector?.value?.files).map(v => {
+                formData.append('image[]', v[1]);
+            }) 
+        }else {
+            fileAll.files.forEach((image, i) => {
+                formData.append('image[]', image);
             })
+        }
+
+        if(packageFormSelector?.value?.weight !== null && typeof packageFormSelector?.value?.weight !== "undefined") {
+            formData.append('weight' , packageFormSelector?.value?.weight)
+        }else{
+            formData.append('weight' , volume)
+        }
+
+        submitPackage(formData)
+        .then(res => {
+            setDisable(false)
+            // document.getElementById('form').reset()
+            // setError([])
+            // history.push('/package')
+            // Toast.success(res.data.message, 2)
+            // dispatch(packageStore([]))
+            // dispatch(storePackageForm([]))
+        }).catch(err => {
+            setDisable(false)
+            setError(err.data.errors)
+        })
+    }
+
+    const changeHandle = (e) => {
+        let name = e?.target?.name
+        let value = e?.target?.value      
+        dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector?.value, [name]: value } }))
     }
 
     const show = () => {
@@ -102,7 +129,8 @@ const SendPackage = () => {
 
     const phoneChange = (value) => {
        setValue(value)
-        if (value.replace(/\s/g, '').length < 11) {
+       dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector?.value, ['phone']: value } }))
+        if (value.replace(/\s/g, '').length < 10) {
             setErrorPhone({
                 hasError: true,
             });
@@ -119,19 +147,38 @@ const SendPackage = () => {
         }
     }
 
+    const handleLocation = () => {
+        let files = []
+        fileAll.files.map(v => {
+            files.push(v)
+        })
+        dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector?.value, ['files']: files } }))
+
+        history.push('/map-search?from=sendpackage')
+    }
 
     return (
-        <section className="container p-4" id={"sendPackageModal"}>
-        <div className="col-md-12 p-2">
-            <div className="d-flex justify-content-between mb-3">
-                <i className="fas fa-arrow-left"  onClick={() =>  history.push('dashboard')}/>
-                <p className="main-p" onClick={() =>  history.push('/dashboard')}>cancel</p>
-            </div>
+        <Layout>
+        <PageHeader
+            style={{ position: "fixed", zIndex: 1, width: "100%" }}
+            className="site-page-header bg-red "
+            onBack={() => history.push('dashboard')}
+            title="Send Package"
+        />
+        <Content
+            className="site-layout"
+            style={{
+            padding: "0 14px",
+            marginTop: 67,
+            }}
+        >
+        <section className="my-3" id={"sendPackageModal"}>
+        <div>
             <form onSubmit={handleSubmit} id={"form"}>
                 <div className="form-group">
                     <label htmlFor="exampleFormControlSelect1">What are my sending ?</label>
-                    <select className="form-control" name={"category_id"} id="exampleFormControlSelect1" required>
-                        <option defaultChecked={true} disabled={true}>Select Category</option>
+                    <select className="form-control" defaultValue={packageFormSelector?.value?.category_id} onChange={changeHandle} name={"category_id"} id="exampleFormControlSelect1" required>
+                        <option defaultChecked={true}  disabled={true}>Select Category</option>
                         {
                             Array.from(getCaterogies).map((response, key) => (
                                 <option key={key} value={response.id}>{response.title}</option>
@@ -143,7 +190,7 @@ const SendPackage = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleFormControlSelect1">Number of Packages?</label>
-                    <select className="form-control" name={"no_of_package"} id="exampleFormControlSelect1" required>
+                    <select className="form-control" defaultValue={packageFormSelector?.value?.no_of_package}  onChange={changeHandle} name={"no_of_package"} id="exampleFormControlSelect1" required>
                         {
                             [1,2,3,4,5].map((res, key) => (
                                 <option key={key} value={res}>{res}</option>
@@ -152,16 +199,22 @@ const SendPackage = () => {
                     </select>
                     { error.no_of_package ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.no_of_package} </small></div> : '' }
                 </div>
-
+         
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Enter receiver's name</label>
-                    <input type="text" className="form-control" name={"receiver_name"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shivam Rijal" required/>
+                    <input type="text" defaultValue={packageFormSelector?.value?.receiver_name} className="form-control" onChange={changeHandle} name={"receiver_name"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shivam Rijal" required/>
                     { error.receiver_name ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.receiver_name} </small></div> : '' }
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Receiver's address</label>
-                    <input type="text" className="form-control" name={"receiver_address"} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Shantinagar, Kathmandu" required/>
+                    <input type="text" 
+                    className="form-control" 
+                    name={"receiver_address"} id="exampleInputEmail1" 
+                    aria-describedby="emailHelp" 
+                    defaultValue={packageFormSelector?.value?.receiver_address?.whole_address}
+                    onFocus={handleLocation} 
+                    placeholder="Shantinagar, Kathmandu" required/>
                     { error.receiver_address ? <div className={"mt-1"}><small className={"text-danger font-11 lh-1"}> {error.receiver_address} </small></div> : '' }
                 </div>
 
@@ -174,7 +227,7 @@ const SendPackage = () => {
                         onChange={phoneChange}
                         clear
                         minLength={8}
-                        value={value}
+                        defaultValue={packageFormSelector?.value?.phone}
                         name={"receiver_phone"}
                         className="form-control"
                         onErrorClick={onErrorClick}
@@ -185,14 +238,15 @@ const SendPackage = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Product Price</label>
-                    <InputItem
-                        type={"text"}
+                    <input
+                        type={"number"}
                         placeholder="Price"
-                        clear
+                        defaultValue={packageFormSelector?.value?.product_price}
                         name={"product_price"}
                         className="form-control"
+                        onChange={changeHandle}
                         required
-                    ></InputItem>
+                    />
 
                     { error.product_price ? <div className={"mt-1"}><small className={"text-danger font-11"}>{error.product_price} </small></div> : '' }
                 </div>
@@ -202,7 +256,8 @@ const SendPackage = () => {
                     <Slider
                         type={"primary"}
                         max={10}
-                        defaultValue={volume}
+                        min={1}
+                        defaultValue={packageFormSelector?.value?.weight || 2}
                         className={"m-0"}
                         onChange={handleOnChange}
                     />
@@ -212,21 +267,33 @@ const SendPackage = () => {
                 <div className="form-group">
                     <label htmlFor="" onClick={e => toggle ? setToggle(false) : setToggle(true) }>
                         Additional Info</label>
-                    <textarea name="" className="form-control" id="" cols="30" name={"special_instruction"} placeholder={"Write a messages..."}></textarea>
+                    <textarea name=""
+                     className="form-control" 
+                     cols="30" 
+                     onChange={changeHandle} 
+                     name={"special_instruction"} 
+                     defaultValue={packageFormSelector?.value?.special_instruction}
+                     placeholder={"Write a messages..."}></textarea>
                 </div>
-                
-                <div className="form-group">
+                        
+                {
+                    packageFormSelector?.value?.receiver_address?.whole_address ?
+                    <div className="form-group">
+                        <Upload
+                            listType="picture"
+                            multiple={true}
+                            beforeUpload={handleChange}
+                            onRemove = {deleteFile}
+                            accept={'image/*'}
+                            FileList={[]}
+                        >
+                            <Button icon={<UploadOutlined />} className={"btn-none"}>Upload Image</Button>
+                        </Upload>
 
-                    <Upload
-                        listType="picture"
-                        beforeUpload={handleChange}
-                        onRemove = {deleteFile}
-                        accept={'image/*'}
-                    >
-                        <Button icon={<UploadOutlined />} className={"btn-none"}>Upload Image</Button>
-                    </Upload>
-
-                </div>
+                    </div>
+                    : ""
+                }
+          
 
                 <div className={"form-group"}>
                     <p htmlFor="" className={"text-black font-weight-bold"}>Total Amount : Rs.200</p>
@@ -236,7 +303,10 @@ const SendPackage = () => {
                 </div>
             </form>
         </div>
-    </section>)
+        </section>
+        </Content>
+        </Layout>
+    )
 }
 
 export default SendPackage

@@ -46,10 +46,10 @@ const Profile = () => {
               <p className="font-14 f-w-500">Sangit Poudel</p>
               <p className="faded-text-sm pt-1">+977 9856565965</p>
             </div>
-            <i class="fas fa-check-circle text-green"></i>
+            <i className="fas fa-check-circle text-green"></i>
           </div>
         </div>
-        <Link to="/ProfileEdit">
+        <Link to="/profile-edit">
           <div className="white-card my-2">
             <p className="heading-sm">ACCOUNT</p>
             <div className="d-flex mt-2">
@@ -58,7 +58,7 @@ const Profile = () => {
             </div>
           </div>
         </Link>
-        <Link to="./Documents">
+        <Link to="/document">
           <div className="white-card my-2">
             <p className="heading-sm">DOCUMENTS</p>
             <div className="d-flex mt-2">

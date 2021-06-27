@@ -2,16 +2,26 @@ import './Map.css'
 import React, {Component, forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import L, {Point} from "leaflet";
 import * as Nominatim from "nominatim-browser";
-import {Circle, LayerGroup, Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, Tooltip } from "react-leaflet";
 import Search from "react-leaflet-search"
 import 'leaflet/dist/leaflet.css';
 import "leaflet/dist/leaflet.js";
 import {Button, Toast} from "antd-mobile";
 import {useDispatch, useSelector} from "react-redux";
 import {getLocations, storeLocation} from "../../../api/vendor";
-import {getLocationsVendor, getUser, locationStoreVendor, userStore} from "../../../reducers/reducers";
+import {
+    getLocationsVendor, 
+    getUser, 
+    locationStoreVendor, 
+    userStore,
+    storePackageForm, 
+    getPackageForm 
+} from "@/reducers/reducers";
 import {apiUser} from "../../../api/vendor/dashboard";
 import {useHistory} from "react-router-dom";
+import Pusher from "pusher-js"
+import Echo from 'laravel-echo';
+import { message } from 'antd';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -43,17 +53,30 @@ const iconVendor = L.icon({
     shadowUrl : ''
 });
 
+const iconLive = L.icon({
+    iconRetinaUrl: "car.png",
+    iconUrl: "car.png",
+    iconSize: new Point(35, 35),
+    shadowUrl : ''
+});
 
+
+// scooter.png
 const MapComp = (props) => {
 
     const leafletMap = useRef()
     const [search, setSearch] = useState()
     const history = useHistory()
 
+    const urlSearchParams = new URLSearchParams(history.location.search);
+    const params = urlSearchParams?.get('from');
+
     const [location, setLocation] = useState()
 
     const allLocations = useSelector(getLocationsVendor)
     const dispatch = useDispatch()
+
+    const packageFormSelector = useSelector(getPackageForm)
 
     const userSelector = useSelector(getUser)
 
@@ -64,15 +87,68 @@ const MapComp = (props) => {
 
     const center = [27.7081859, 85.322004]
 
+
+    // listen for real time tracking
+    // useEffect(() => {
+
+    //     const { current = {} } = leafletMap;
+    //     const { leafletElement: map } = current;
+
+    //     const options = {
+    //         broadcaster: process.env.REACT_APP_BROADCAST,
+    //         key: process.env.REACT_APP_PUSHER_KEY,
+    //         cluster: 'ap2',
+    //         wsHost: '127.0.0.1',
+    //         wsPort: 6001,
+    //         forceTLS: false,
+    //         encrypted: false,
+    //         disableStats: true,
+    //         enabledTransports: ['ws'],
+    //     };
+
+    //     const echo = new Echo(options);
+    //     echo.connector.pusher.config.authEndpoint = `http://127.0.0.1:8000/broadcasting/auth`;
+
+    //     const listenLive = echo.channel(`testChannel`).listen('.location',(data) => {
+    //         if(!window.rider){
+    //             map.setView([data.lat, data.long])
+    //             window.rider = L.marker([data.lat, data.long], {
+    //                 draggable: false,
+    //                 icon: iconLive,
+    //                 zoom: 14
+    //             }).addTo(map)
+    //                 .openPopup()
+
+    //         }else{
+    //             map.setView([data.lat, data.long])
+    //             window.rider
+    //                 .setLatLng([data.lat, data.long])
+
+    //         }
+    //     });
+
+    //     return () => { listenLive() }
+
+    // }, [])
+
+    // location watch
     useEffect(() => {
-        if (props.refresh > 0 )
+        let isMounted = true
+
+        if (props.refresh > 0 && isMounted)
             watchMyLocateMe()
+
+        return () => { isMounted = false } 
     },[props.refresh])
 
     useEffect(() => {
-        if (props.clearGeoWatch > 0) {
+        let isMounted = true
+
+        if (props.clearGeoWatch > 0 && isMounted) {
             navigator.geolocation.clearWatch(geoWatch);
         }
+
+        return () => { isMounted = false } 
     }, [props.clearGeoWatch])
 
     const watchMyLocateMe = (withMarker = false) => {
@@ -86,10 +162,16 @@ const MapComp = (props) => {
                 if (map) {
                     map.setView([lat, long + .0005])
                     markerLayer.clearLayers()
-                    L.marker([lat, long + .0005], {
-                        icon: iconAccurate,
-                        draggable: false
-                    }).addTo(map)
+
+
+                    if(!window.current ){
+                        window.current = L.marker([lat, long + .0005], {
+                            icon: iconAccurate,
+                            draggable: false
+                        }).addTo(map)
+                    }else {
+                        window.current.setLatLng([lat, long])
+                    }
 
                     if(!window.marker){
                         window.marker = L.marker([lat, long], {
@@ -107,7 +189,18 @@ const MapComp = (props) => {
                             zoom: 18
                         })
                         .then((result) => {
+                            let location = {
+                                'city': result.address.suburb || result.address.town || result.address.city,
+                                'state':  result.address.region || result.address.county,
+                                'country': result.address.country,
+                                'long': result.lon,
+                                'lat':result.lat,
+                                'whole_address': result.display_name
+                            }
+                
+                            document.querySelector('.search-input').value = result.display_name
                             setLocation(location)
+                            markerSet()
                             document.querySelector('.search-input').value = result.display_name
                         })
 
@@ -177,17 +270,24 @@ const MapComp = (props) => {
 
 
     useEffect(() => {
-        if(allLocations.length === 0)
+        let isMounted = true
+
+        if(allLocations.length === 0 && isMounted){
             getLocations()
                 .then(res => {
                     dispatch(locationStoreVendor(res.data))
                 })
+        }
+
+        return () => { isMounted = false } 
 
     }, [allLocations])
 
 
     useEffect(() => {
-        if(userSelector.length === 0) {
+        let isMounted = true
+
+        if(userSelector.length === 0 && isMounted) {
              apiUser().then(res => {
                 if (res.status === 200){
                     if(res.data.location !== null) {
@@ -204,22 +304,27 @@ const MapComp = (props) => {
             })
         }
 
-        if(typeof userSelector !== "undefined" && userSelector.location !== null && userSelector.length !== 0) {
-            const {current = {}} = leafletMap;
-            const {leafletElement: map} = current;
-            const markerLayer = new L.LayerGroup().addTo(map);
+        if(typeof userSelector !== "undefined" && userSelector.location !== null && userSelector.length !== 0 && isMounted) {
 
-            markerLayer.clearLayers();
+            if(typeof userSelector?.location?.lat !== "undefined"){
+                const {current = {}} = leafletMap;
+                const {leafletElement: map} = current;
+                const markerLayer = new L.LayerGroup().addTo(map);
 
-            window.marker = L.marker( [userSelector.location.lat, userSelector.location.long] ,{
-                draggable: true,
-            }).addTo(map)
-                .bindPopup('Drag to change location')
-                .openPopup()
+                markerLayer.clearLayers();
 
-            map.setView([userSelector.location.lat, userSelector.location.long])
-            markerSet()
+                window.marker = L.marker( [userSelector?.location?.lat, userSelector?.location?.long] ,{
+                    draggable: true,
+                }).addTo(map)
+                    .bindPopup('Drag to change location')
+                    .openPopup()
+
+                map.setView([userSelector?.location?.lat, userSelector?.location?.long])
+                markerSet()
+            }
         }
+
+        return () => { isMounted = false } 
 
     }, [userSelector])
 
@@ -250,12 +355,24 @@ const MapComp = (props) => {
     }
 
     const saveLocation = () => {
-        storeLocation(location)
+        if(typeof location === "undefined"){
+            Toast.fail('Location is not selected', 2)
+            return;
+        }
+        if(params){
+            dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector.value, ["receiver_address"]: location } }))
+            history.push('/package-form');
+        }else{
+            storeLocation(location)
             .then(res => {
                 navigator.geolocation.clearWatch(geoWatch);
                 Toast.success('Location updated !!!', 2);
+                dispatch(userStore(res.data.data))
                 history.push('/dashboard');
+            }).catch(err => {
+                Toast.fail('Someting went wrong', 2);
             })
+        }
     }
 
     return (
@@ -267,11 +384,11 @@ const MapComp = (props) => {
             doubleClickZoom={true}
             scrollWheelZoom={true}
             ref={leafletMap}
-
         ><TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors" />
 
-            {
-                allLocations.map((res, key) => (
+            {/* all vendor locations  */}
+            {   
+                allLocations?.map((res, key) => (
                     <Marker key={key}  position={[res.location['lat'], res.location['long']]} icon={iconRider} >
                         <Tooltip sticky offset={[0, -15.2]} direction={"top"} opacity={1}>
                             <p className={"font-weight-bold"}>Sathixa Vendor</p>
@@ -303,7 +420,7 @@ const MapComp = (props) => {
           <Button type={"primary"}
                   onClick={saveLocation}
                   className={"px-4 text-white position-absolute text-uppercase"}
-                  style={{ zIndex: "9999999", right: "10px", left : "10px", bottom: "55px",fontWeight: "400",
+                  style={{ zIndex: "9999999", right: "14px", left : "14px", bottom: "15px",fontWeight: "400",
                       letterSpacing: ".5px",
                       fontSize: "16px"}}>
               Confirm Address

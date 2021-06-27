@@ -39,7 +39,7 @@ const ProfileRider = () => {
             <p className="font-14 f-w-500">Sangit Poudel</p>
             <p className="faded-text-sm">+977 9856565965</p>
           </div>
-          <i class="fas fa-check-circle text-green"></i>
+          <i className="fas fa-check-circle text-green"></i>
         </div>
       </div>
       <Link to="/ProfileEdit">

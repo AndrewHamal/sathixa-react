@@ -1,93 +1,146 @@
 import React, {useEffect, useState, useRef} from 'react';
-import authClient from "./services/auth";
-import Login from "./pages/vendor/Login";
+import Login from "@/pages/vendor/Login";
+import LoginRider from "@/pages/rider/Login";
 import Logout from "./pages/vendor/Logout";
-import Dashboard from "./pages/vendor/Dashboard";
-import { token } from "./reducers/reducers";
-import { useDispatch} from "react-redux";
-import {Switch, Route, Redirect, useHistory,} from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import {Switch, Route, Redirect, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import ProtectedRoute from "./routes/ProtectedRoutes";
-import Packages from './pages/vendor/Packages';
-import FooterMenu from "./parts/vendor/FooterMenu";
-import SendPackage from "./pages/vendor/SendPackage";
-import Success from "./pages/vendor/Success";
 import LoadingBar from 'react-top-loading-bar';
 // import MapPage from "./pages/vendor/MapPage";
-import Echo from 'laravel-echo';
 import { location } from "./reducers/locateReducer";
 import './assets/global.css';
 import './antdTheme.less';
-import MapSearch from "./pages/vendor/MapSearch";
-import Pusher from "pusher-js"
 import Notif from "./pages/rider/Notif";
 import Delivery from "./pages/rider/Delivery";
-import Profile from "./pages/rider/Profile";
 import ProfileEdit from "./pages/rider/ProfileEdit";
 import Pack from "./pages/rider/Pack";
-import Inbox from "./pages/rider/Inbox";
 import Documents from "./pages/rider/Documents";
-import RiderAccept from "./pages/rider/RiderAccept";
 import ProfileRider from "./pages/rider/ProfileRider";
 import PackageTrack from "./pages/rider/PackageTrack";
+import authClient from '@/services/auth';
+
+import { isAuthRider } from "@/reducers/rider/reducers"
+
+import VendorLayout from "@/components/vendor/layouts"
+import vendorRoutes from "@/routes/vendor"
+
+import RiderLayout from "@/components/rider/layouts"
+import riderRoutes from "@/routes/rider"
+
+import { vendorAuth } from "@/reducers/reducers"
 
 const App = () => {
 
     const ref = useRef(null)
-    const [loggedIn, setLoggedIn] = React.useState(
-        localStorage.getItem('loggedIn') == 'true' || false
-    );
+    const dispatch = useDispatch()
+
+    const isRiderAuth = useSelector(isAuthRider)
+
+    const isVendorAuth = useSelector(vendorAuth)
+
     const [getPathname, setPathname] = useState(null)
     const history = useHistory()
 
-    const dispatch = useDispatch()
-    const login = (response) => {
-        setLoggedIn(true);
-        dispatch(token(response))
-        localStorage.setItem('_token', response)
-        localStorage.setItem('loggedIn', true);
-    };
+    // vendor routes collection 
+    const [vendorRoute, setVendorRoute] = useState({
+      path: [],
+      comp: [],
+    });
+
+    const prepareVendorRoute = () => {
+      let tempPath = [],
+      tempComp = [];
+   
+      Object.keys(vendorRoutes).forEach((v, i) => {
+        tempPath.push(Object.values(vendorRoutes)[i].path);
+        tempComp.push(Object.values(vendorRoutes)[i].component);
+      })
+
+      setVendorRoute({
+        ...vendorRoute,
+        path: tempPath,
+        comp: tempComp,
+      });
+    }
+
+    // rider routes collection 
+    const [riderRoute, setRiderRoute] = useState({
+      path: [],
+      comp: [],
+    });
+
+    const prepareRiderRoute = () => {
+      let tempPath = [],
+      tempComp = [];
+   
+      Object.keys(riderRoutes).forEach((v, i) => {
+        tempPath.push(Object.values(riderRoutes)[i].path);
+        tempComp.push(Object.values(riderRoutes)[i].component);
+      })
+
+      setRiderRoute({
+        ...riderRoute,
+        path: tempPath,
+        comp: tempComp,
+      });
+    }
 
     const logout = () => {
-        authClient().post('logout')
-            .then( response => {
-                if (response.status === 200) {
-                    localStorage.setItem('loggedIn', false);
-                    setLoggedIn(false)
-                }
-            })
+      authClient.post('logout')
+        .then( response => {
+            if (response.status === 200) {
+                localStorage.setItem('loggedIn', false);
+                // setLoggedIn(false)
+            }
+        })
     };
 
+    // global error handeling 
     useEffect(() => {
-        // websocket listen
-        const options = {
-            broadcaster: process.env.REACT_APP_BROADCAST,
-            key: process.env.REACT_APP_PUSHER_KEY,
-            cluster: 'ap2',
-            wsHost: '127.0.0.1',
-            wsPort: 6001,
-            forceTLS: false,
-            encrypted: false,
-            disableStats: true,
-            enabledTransports: ['ws'],
-        };
+    
+      prepareRiderRoute()
+      prepareVendorRoute()
 
-        const echo = new Echo(options);
-        echo.connector.pusher.config.authEndpoint = `http://127.0.0.1:8000/broadcasting/auth`;
+  
+      // authClient.interceptors.response.use(
+      //   (response) => Promise.resolve(response),
+      //   (error) => {
+      //     const { response } = error;
 
-        echo.channel(`testChannel`).listen('.server.created',(data) => {
-            dispatch(location({lat: data.lat, long: data.long}))
-        });
+      //     if (!response.status){
+      //       return Promise.reject(response);
+      //     }
 
+      //     if (response.status === 500) {
+      //       // notifyAnt['error']({message:"Somthing went wrong. please try again"})
+      //     }
 
-        // redirect if base
-        if(window.location.pathname === '/')
-            history.push('/login')
-            
-        ref.current.complete()
+      //     if (response.status === 401) { //Unauthenticated
+      //       // dispatch(checkAuth(false));
+      //       // window.localStorage.removeItem('_token');
+      //       // history.push("/login");
+      //       // notifyAnt['error']({message:"Session expired"})
+      //     }
+
+      //     return Promise.reject(response);
+      //   },
+      // );
 
     }, [])
 
     useEffect(() => {
+        // websocket listen
+   
+        // redirect if base
+        // if(window.location.pathname === '/')
+        //     history.push('/vendor/login')
+            
+        // ref.current.complete()
+
+    }, [])
+
+    useEffect(() => {
+      console.log(isVendorAuth)
         const listener = history.listen(() => {
           if(typeof ref?.current !== "undefined"){
             ref?.current?.continuousStart();
@@ -116,51 +169,80 @@ const App = () => {
       }, [getPathname])
 
     // loader init
-   
 
     return (
         <div>
             <LoadingBar color='#f11946' ref={ref} />
 
-            <div className={ loggedIn && window.location.pathname !== "/map-search" ? 'App mb-100' : 'App'} >
+            <div className={ isVendorAuth && window.location.pathname !== "/map-search" ? 'App mb-100' : 'App'} >
               <Switch>
                 <Route exact path={"/notif"} component={Notif} />
                 <Route exact path={"/delivery"} component={Delivery} />
-                <Route exact path={"/Profile"} component={Profile} />
                 <Route exact path={"/ProfileEdit"} component={ProfileEdit} />
-                <Route exact path={"/Pack"} component={Pack} />
                 <Route exact path={"/PackageTrack"} component={PackageTrack} />
-                <Route exact path={"/Inbox"} component={Inbox} />
                 <Route exact path={"/Documents"} component={Documents} />
-                <Route exact path={"/RiderAccept"} component={RiderAccept} />
                 <Route exact path={"/ProfileRider"} component={ProfileRider} />
 
-                  /*vendo routes */
-                  <Route exact path={'/'} />
+
+                {/* common route  */}
+                {/* <Route exact path={"/map-search"} component={MapSearch} /> */}
+
+
+                {/* Rider routes  */}
+                <Route exact render={props =>
+                !isRiderAuth ? (
+                <LoginRider {...props}/>
+                  ) : (
+                  <Redirect to={{ pathname: '/rider/dashboard' }} />
+                )} path="/rider/login" />
+
+                {
+                  isRiderAuth ? 
+                  <Router exact basename="/rider">
+                  <RiderLayout mainHistory={history}>
+                       {riderRoute?.path?.map((v, i) => (
+                         <ProtectedRoute path={ v } key={i} auth={isRiderAuth}>
+                           {riderRoute.comp[i]}
+                         </ProtectedRoute>
+                         ))
+                       }
+                  </RiderLayout>
+                </Router> : "" }            
+                {/* Rider routes end */}
+
                   
-                  <Route exact render={props =>
-                      !loggedIn ? (
-                      <Login {...props} login={login} />
-                        ) : (
-                        <Redirect to={{ pathname: '/dashboard' }} />
-                      )} path="/login" />
+                {/* vendor routes  */}
+                <Route exact render={props =>
+                  !isVendorAuth ? (
+                  <Login {...props}/>
+                    ) : (
+                    <Redirect to={{ pathname: '/vendor/dashboard' }} />
+                )} path="/vendor/login" />  
+                
+                {isVendorAuth ? 
 
-                  <ProtectedRoute path={ "/dashboard" } component={ Dashboard } auth={loggedIn}/>
-                  {/*<ProtectedRoute path={ "/map" } component={ MapPage } auth={loggedIn}/>*/}
-                  <ProtectedRoute path={ "/map-search" } component={ MapSearch } auth={loggedIn}/>
-                  <ProtectedRoute path={ "/package" } component={ Packages } auth={loggedIn}/>
-                  <ProtectedRoute path={ "/package-form" } component={ SendPackage } auth={loggedIn}/>
-                  <ProtectedRoute path ={ "/Success" } component={ Success } auth={loggedIn} />
+                <Router exact basename="/vendor">
+                  <VendorLayout>
+                      {vendorRoute?.path?.map((v, i) => (
+                        <ProtectedRoute path={ v } key={i} auth={isVendorAuth}>
+                          {vendorRoute.comp[i]}
+                        </ProtectedRoute>
+                        ))
+                      }
+                  </VendorLayout>
+                </Router> : "" }    
+          
+                {/* vendor routes end */}
 
-                  <Route exact render={props =>
-                      (<Logout {...props} logout={logout} />
-                      )} path="/logout" />
+                <Route exact render={props =>
+                    (<Logout {...props} logout={logout} />
+                    )} path="/logout" />
 
               </Switch>
 
-              {  loggedIn && window.location.pathname !== "/map-search" ?
-                  <FooterMenu />  : ''
-              }
+              {/* {  loggedIn && window.location.pathname !== "/map-search" ?
+                   : ''
+              } */}
           </div>
         </div>
     )

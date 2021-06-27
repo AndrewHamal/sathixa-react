@@ -4,12 +4,15 @@ import { Redirect } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { apiRegister } from "../../api/vendor/register";
 import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "../../api/vendor/login";
-import {Button, Toast} from "antd-mobile";
+import { useDispatch } from "react-redux"
+import { token } from "@/reducers/reducers";
 
 const Login = (props) => {
     const [data, setState] = useState({email:'', password:''})
     const loggedIn = sessionStorage.getItem('loggedIn')
     const history = useHistory()
+    const dispatch = useDispatch()
+
 
     const [upperError, setUpperError] = useState(1)
     const [lowerError, setlowerError] = useState(1)
@@ -28,30 +31,28 @@ const Login = (props) => {
         setLoader(true)
         setDisableSubmit(false)
 
-        let response =  apiLogin(data)
-        response
+        apiLogin(data)
             .then(res => {
-                if(res.status === 200){
-                    props.login(res.data.data.token)
-                    history.push('/dashboard')
-                    return
-                }
+                dispatch(token(true))
+                setLoader(false)
+                setDisableSubmit( false )
+                localStorage.setItem('_token', res.data.token)
+                localStorage.setItem('loggedIn', true);
+                history.push('/vendor/dashboard')
 
-                setLoader( false)
-                setDisableSubmit( false)
+            }).catch(err => {
+                // console.log(err)
+                setLoader(false)
+                setDisableSubmit(false)
+                if (err?.data?.errors?.email)
+                    setEmailError(true)
+                else
+                    setEmailError(false)
 
-                if (res.data) {
-                    if (res.data.errors.email)
-                        setEmailError(true)
-                    else
-                        setEmailError(false)
-
-
-                    if (res.data.errors.password)
-                        setPasswordError(true)
-                    else
-                        setPasswordError(false)
-                }
+                if (err?.data?.errors?.password)
+                    setPasswordError(true)
+                else
+                    setPasswordError(false)
             })
     }
 
@@ -62,24 +63,19 @@ const Login = (props) => {
         if(access_token !== null){
             apiGoogleCallback(access_token)
                 .then(res => {
-                    if(res.status === 200 ){
-                        props.login(res.data.data.token)
-                        history.push('/dashboard')
-                        return
-                    }
-
-                    if (res.data) {
-                        if (res.data.errors.email)
-                            setEmailError(true)
-                        else
-                            setEmailError(false)
+                    props.login(res.data.data.token)
+                    history.push('/dashboard')
+                }).catch(err => {
+                    if (err.data.errors.email)
+                        setEmailError(true)
+                    else
+                        setEmailError(false)
 
 
-                        if (res.data.errors.password)
-                            setPasswordError(true)
-                        else
-                            setPasswordError(false)
-                    }
+                    if (err.data.errors.password)
+                        setPasswordError(true)
+                    else
+                        setPasswordError(false)
                 })
         }
     }, []);
@@ -91,21 +87,19 @@ const Login = (props) => {
 
         let res = apiRegister(data)
         res.then(resp => {
-            if (resp.status === 201) {
-                props.login(resp.data.access_token);
-                history.push('/dashboard')
-                return
-            }
-
+            props.login(resp.data.access_token);
+            history.push('/dashboard')
             setLoader(false)
             setDisableSubmit(false)
-            if(resp.data){
-                if(resp.data.errors.email)
+        }).catch(err => {
+            setLoader(false)
+            setDisableSubmit(false)
+            if(err.data){
+                if(err.data.errors.email)
                     setEmailStatus(true)
                 else
                     setEmailStatus(false)
             }
-
         })
     }
 
@@ -178,7 +172,7 @@ const Login = (props) => {
     return (
 
         <div>
-            <section className="container mt-3 px-2">
+            <section className="container mt-4 px-2">
                 <div className="col-md-12 text-center">
                     <ul className="nav nav-pills mb-5" id="pills-tab" role="tablist">
                         <li className="nav-item">
@@ -197,7 +191,7 @@ const Login = (props) => {
                             <div className="mt-4">
 
                                 <form onSubmit={handleLoginSubmit}>
-                                    <div className="input-group ">
+                                    <div className="input-group mb-4">
                                         <input type="email"
                                                className="login-input"
                                                name={"email"}
@@ -242,17 +236,17 @@ const Login = (props) => {
                                             {/*    className={`dot-small my-auto ${eightString ? 'bg-danger' : ''}`}/> Contain at least 8 letter</p>*/}
                                         </div>
                                     </div>
-                                    <div className="btn-container mb-2">
+                                    <div className="btn-container mb-2 mt-3">
                                         <button className="w-100 btn btn-primary text-white" disabled={ disableSubmit ? 'disabled' : '' }>
                                             { loader ? <i className="fas fa-circle-notch fa-spin text-white fa-lg"></i>
                                                 : 'Submit'}
                                         </button>
                                     </div>
-                                    <p>or</p>
+                                    <p className="my-4">OR</p>
 
                                 </form>
-                                <div className="btn-container mt-2">
-                                    <button className="btn btn-google w-100  my-auto" onClick={redirect}><i
+                                <div className="btn-container">
+                                    <button className="btn btn-google w-100 p-0 my-auto" onClick={redirect}><i
                                         className="fab fa-google my-auto mr-2"/>Signin With
                                         Google
                                     </button>
@@ -263,7 +257,7 @@ const Login = (props) => {
                              aria-labelledby="pills-profile-tab">
                             <div className="mt-4">
                                 <form onSubmit={handleSignupSubmit} id={"form"}>
-                                    <div className="input-group ">
+                                    <div className="input-group mb-4">
                                         <input type="text"
                                                className="login-input"
                                                name={"first_name"}
@@ -274,7 +268,7 @@ const Login = (props) => {
                                         <label className="login-label">First Name <span
                                             className="color-red">*</span></label>
                                     </div>
-                                    <div className="input-group ">
+                                    <div className="input-group mb-4">
                                         <input type="text"
                                                className="login-input"
                                                name={"last_name"}
@@ -286,7 +280,7 @@ const Login = (props) => {
                                             className="color-red">*</span></label>
                                     </div>
 
-                                    <div className="input-group ">
+                                    <div className="input-group mb-4">
                                         <input type="text"
                                                className="login-input"
                                                name={"phone"}
@@ -299,7 +293,7 @@ const Login = (props) => {
 
                                     </div>
 
-                                    <div className="input-group ">
+                                    <div className="input-group mb-4">
                                         <input type="email"
                                                className="login-input"
                                                name={"email"}
@@ -311,9 +305,9 @@ const Login = (props) => {
                                             className="color-red">*</span></label>
 
 
-                                        { emailStatus ? <small className={"font-11 text-danger mt-1"}>The email has already been taken.</small> : '' }
+                                        { emailStatus ? <small className={"font-11 text-danger mt-2"}>The email has already been taken.</small> : '' }
                                     </div>
-                                    <div className="input-group ">
+                                    <div className="input-group mb-4">
                                         <input type="password"
                                                className="login-input"
                                                name={"password"}
