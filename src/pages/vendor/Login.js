@@ -38,7 +38,7 @@ const Login = (props) => {
                 setDisableSubmit( false )
                 localStorage.setItem('_token', res.data.token)
                 localStorage.setItem('loggedIn', true);
-                history.push('/vendor/dashboard')
+                history.push('/dashboard')
 
             }).catch(err => {
                 // console.log(err)
@@ -172,7 +172,7 @@ const Login = (props) => {
     return (
 
         <div>
-            <section className="container mt-4 px-2">
+            <section className="container pt-4 px-2">
                 <div className="col-md-12 text-center">
                     <ul className="nav nav-pills mb-5" id="pills-tab" role="tablist">
                         <li className="nav-item">

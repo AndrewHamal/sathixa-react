@@ -33,7 +33,7 @@ const Inbox = () => {
         className="site-layout"
         style={{
           padding: "0 14px",
-          marginTop: 80,
+          marginTop: 60,
         }}
       >
         <div className="site-layout-background">

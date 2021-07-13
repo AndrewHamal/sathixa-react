@@ -2,9 +2,10 @@ import {useEffect, useState} from "react";
 import { getPackages } from "../../api/vendor";
 import {getPackage, packageStore} from "../../reducers/reducers";
 import {useDispatch, useSelector} from "react-redux";
-import InfiniteScroll from "react-infinite-scroll-component";
-import {SegmentedControl} from "antd-mobile";
-import {Skeleton, Layout, PageHeader} from "antd";
+import {SegmentedControl, Pagination, Icon} from "antd-mobile";
+import {Skeleton, Layout, Empty} from "antd";
+import { Link } from "react-router-dom";
+import * as BS from "bikram-sambat-js"
 
 const { Header, Content, Footer } = Layout;
 
@@ -14,31 +15,41 @@ const Packages = () => {
     const [nextPage, setPage] = useState(1)
     const [lastPage, setLastPage] = useState(1)
     const [hasMore, setHasMore] = useState(false)
-    const [loader, setLoader] = useState(false)
+    const [loader, setLoader] = useState(true)
     const [msgError, setMsgError] = useState('')
+    const [segment, setSegment] = useState(0)
 
-    const fetchData = (search, page) => {
-        setLoader(true)
-        getPackages(search, page)
+    const locale = {
+        prevText: 'Prev',
+        nextText: 'Next',
+    };
+
+    const fetchData = (search, page, type, changeSegment=false) => {
+        getPackages(search, page, type)
             .then(res => {
-                if (res?.status === 200) {
-                    setLoader(false)
-                    let data = res.data.data
-                    let lastPage = res.data.last_page
-                    let nextPages = res.data.current_page + 1;
+                if(res.data.data.length === 0){
+                    dispatch(packageStore([]))
+                    if(type === 0)
+                        setMsgError(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Oops!! No data"/>)
+                    
+                    if(type === 1)
+                        setMsgError(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Oops!! No data found on processing"/>)
+                                 
+                    if(type === 2)
+                        setMsgError(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Oops!! No data found on Delivery"/>)
 
-                    if(lastPage !== 1)
-                        setPage(nextPages)
-
-                    setLastPage( lastPage )
-
-                    if(lastPage > res.data.current_page)
-                        setHasMore(true)
-                    else
-                        setHasMore(false)
-
-                    dispatch(packageStore( packageValue.concat(data)))
+                    setHasMore(false)
+                    return
                 }
+
+                let data = res.data.data
+                let lastPage = res.data.last_page
+                let currentPage = res.data.current_page;
+
+                setLastPage(lastPage)
+                setPage(currentPage)
+                dispatch(packageStore(data))
+                setLoader(false)
             })
     }
 
@@ -53,21 +64,22 @@ const Packages = () => {
                 }
 
                 if(res.data.data.length === 0)
-                    setMsgError(<small> No Data Found </small>)
+                    setMsgError(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
 
             })
     }
 
     const getFilterPackages = () => {
-        fetchData('', nextPage)
+        fetchData('', nextPage, segment)
     }
 
     useEffect(() => {
         if(packageValue.length === 0) {
-            fetchData('', nextPage)
+            fetchData('', nextPage, 0)
+        }else{
+            setLoader(false)
         }
     }, [])
-
 
     return (
     <Layout>
@@ -225,50 +237,59 @@ const Packages = () => {
             </div>
             <div className="status-tab d-flex justify-content-between my-3">
                 <SegmentedControl
+                    selectedIndex={segment}
                     className={"w-100 border-none font-14"}
-                    values={['Total Order', 'Delivered', 'Processing']}
+                    values={['Total Order', 'Processing', 'Delivered']}
                     tintColor={"#db2b39"}
-                    // onChange={e => getFilterPackages(e.nativeEvent.selectedSegmentIndex)}
-                    // onValueChange={this.onValueChange}
+                    onChange={e => {setSegment(e.nativeEvent.selectedSegmentIndex); fetchData('', 0, e.nativeEvent.selectedSegmentIndex, true)}}
+                    // onValueChange={e => console.log()}
                 />
             </div>
             <div>
                 <Skeleton loading={loader} active />
-
-                <InfiniteScroll
-                    dataLength={packageValue.length}
-                    next={getFilterPackages}
-                    hasMore={ hasMore }
-                    loader={<p className={"my-2"}> Loading...</p>}
-                >
-
-
-                    {
-                        packageValue.length > 0 ?
-                            packageValue.map((res,key) => (
-                                <div key={key} className="total-order-card ap mb-2 d-flex justify-content-between">
+                {
+                    packageValue.length > 0 ?
+                        packageValue.map((res,key) => (
+                            <Link to={`/package-detail/${res.id}`} key={key}>
+                                <div className="total-order-card ap mb-2 d-flex justify-content-between">
                                     <div className="d-flex">
                                         <div className="store-border d-flex p-2">
                                             <i className="fas fa-store m-auto" />
                                         </div>
                                         <div className="ml-1">
                                             <p className="font-17 font-weight-bold">{ res.receiver_name }</p>
-                                            <p className="package-card-date pt-0">{ res.receiver_address }</p>
+                                            <p className="package-card-date pt-0">{ res?.location?.city }</p>
                                         </div>
                                     </div>
                                     <div>
-                                        <p className="package-card-date">Processing</p>
-                                        <p className="font-14 font-weight-bold">Feb 22</p>
+                                        {/* <p className="package-card-date">{ res.process_step == 1 || res.process_step == 2 ? 'Processing' : 'Delivered' } </p> */}
+                                        { res.process_step == 3 ?
+                                            <p className="package-card-date text-right">Delivered</p>
+                                            : res.process_step === null ?  
+                                            <p className="package-card-date text-right">Pending</p>
+                                            : <p className="package-card-date text-right">Processing</p>
+                                        }
+                                        <p className="font-14 f-w-600 text-right">
+                                            {BS.ADToBS(`${new Date(res.created_at).getFullYear()}-${new Date(res.created_at).getMonth() + 1}-${new Date(res.created_at).getDate()}`)}
+                                        </p>
                                     </div>
                                 </div>
-                            ))
+                            </Link>
+                        ))
+                    : msgError
+                }   
 
-                            : msgError
-                    }
+                {
+                    lastPage > 1 ?
+                    <Pagination 
+                        total={lastPage} 
+                        current={nextPage} 
+                        locale={locale} 
+                        onChange={e => fetchData('', e, segment)}
+                    /> : null
 
-                </InfiniteScroll>
-
-
+                }
+   
 
             </div>
         </div>

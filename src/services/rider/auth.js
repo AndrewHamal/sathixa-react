@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const authClient = axios.create({
+const authClientInstance = axios.create({
     baseURL: process.env.REACT_APP_API_URL + 'api/rider/',
 })
 
-authClient.interceptors.request.use(
+authClientInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('_riderToken');
         if (token) {
@@ -20,4 +20,4 @@ authClient.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
-export default authClient
+export default authClientInstance

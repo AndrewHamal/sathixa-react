@@ -1,6 +1,8 @@
 import './Map.css'
 import React, {Component, forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
-import L, {Point} from "leaflet";
+import * as L from "leaflet";
+import {Point} from "leaflet";
+import 'leaflet-routing-machine';
 import * as Nominatim from "nominatim-browser";
 import { Map, Marker, Popup, TileLayer, Tooltip } from "react-leaflet";
 import Search from "react-leaflet-search"
@@ -8,20 +10,20 @@ import 'leaflet/dist/leaflet.css';
 import "leaflet/dist/leaflet.js";
 import {Button, Toast} from "antd-mobile";
 import {useDispatch, useSelector} from "react-redux";
-import {getLocations, storeLocation} from "../../../api/vendor";
+import {getLocations, storeLocation, getPackage} from "@/api/vendor";
 import {
     getLocationsVendor, 
     getUser, 
     locationStoreVendor, 
     userStore,
     storePackageForm, 
-    getPackageForm 
+    getPackageForm, 
 } from "@/reducers/reducers";
 import {apiUser} from "../../../api/vendor/dashboard";
 import {useHistory} from "react-router-dom";
+
 import Pusher from "pusher-js"
 import Echo from 'laravel-echo';
-import { message } from 'antd';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -53,11 +55,10 @@ const iconVendor = L.icon({
     shadowUrl : ''
 });
 
-const iconLive = L.icon({
+const iconLive = L.divIcon({
     iconRetinaUrl: "car.png",
     iconUrl: "car.png",
-    iconSize: new Point(35, 35),
-    shadowUrl : ''
+		html:`<div class="rider-icon" ><img src="/car.png" width="45"></>`
 });
 
 
@@ -70,6 +71,10 @@ const MapComp = (props) => {
 
     const urlSearchParams = new URLSearchParams(history.location.search);
     const params = urlSearchParams?.get('from');
+
+		const [loading, setLoading] = useState(true);
+
+    const paramsRider = urlSearchParams?.get('rider');
 
     const [location, setLocation] = useState()
 
@@ -89,47 +94,106 @@ const MapComp = (props) => {
 
 
     // listen for real time tracking
-    // useEffect(() => {
+		const listenForRider = (map) => {
+			if(paramsRider !== null){
 
-    //     const { current = {} } = leafletMap;
-    //     const { leafletElement: map } = current;
+        const options = {
+            broadcaster: process.env.REACT_APP_BROADCAST,
+            key: process.env.REACT_APP_PUSHER_KEY,
+            cluster: 'ap2',
+            wsHost: '127.0.0.1',
+            wsPort: 6001,
+            forceTLS: false,
+            encrypted: false,
+            disableStats: true,
+            enabledTransports: ['ws'],
+        };
 
-    //     const options = {
-    //         broadcaster: process.env.REACT_APP_BROADCAST,
-    //         key: process.env.REACT_APP_PUSHER_KEY,
-    //         cluster: 'ap2',
-    //         wsHost: '127.0.0.1',
-    //         wsPort: 6001,
-    //         forceTLS: false,
-    //         encrypted: false,
-    //         disableStats: true,
-    //         enabledTransports: ['ws'],
-    //     };
+        window.echo = new Echo(options);
+        window.echo.connector.pusher.config.authEndpoint = `http://127.0.0.1:8000/broadcasting/auth`;
+				
+        window.echo.channel(`vendorPackage.`+ paramsRider).listen('.location',(data) => {
 
-    //     const echo = new Echo(options);
-    //     echo.connector.pusher.config.authEndpoint = `http://127.0.0.1:8000/broadcasting/auth`;
+					if(data?.package_id == paramsRider){
+						const {current = {}} = leafletMap;
+						const {leafletElement: map} = current;
+						if(!window.rider){
+							map.setView([data.lat, data.long])
+							window.rider = L.marker([data.lat, data.long], {
+									draggable: false,
+									icon: iconLive,
+									zoom: 14
+							}).addTo(map)
 
-    //     const listenLive = echo.channel(`testChannel`).listen('.location',(data) => {
-    //         if(!window.rider){
-    //             map.setView([data.lat, data.long])
-    //             window.rider = L.marker([data.lat, data.long], {
-    //                 draggable: false,
-    //                 icon: iconLive,
-    //                 zoom: 14
-    //             }).addTo(map)
-    //                 .openPopup()
+							document.querySelector('.rider-icon img').style.transform = `rotate(${data.heading || 0}deg)`
 
-    //         }else{
-    //             map.setView([data.lat, data.long])
-    //             window.rider
-    //                 .setLatLng([data.lat, data.long])
+						}else{
+								
+							map.setView([data.lat, data.long])
+							window.rider
+							.setLatLng([data.lat, data.long])
 
-    //         }
-    //     });
+						}
+					}
+        });
 
-    //     return () => { listenLive() }
+			}
+		}
 
-    // }, [])
+		useEffect(() => {
+
+			const deactive = history.listen(() => {
+				if(typeof window.echo !== "undefined"){
+					window.echo.leaveChannel('testChannel')
+					delete window.echo
+					delete window.rider
+				}
+			})
+		
+			return () => { deactive() }
+
+		}, [history])
+
+    // get if rider tracking 
+    useEffect(() => {
+		
+			const {current = {}} = leafletMap;
+			const {leafletElement: map} = current;
+
+			if(paramsRider === null){
+				setLoading(false)
+			}else{
+				getPackage(paramsRider)
+				.then(res => {
+					res = res.data
+
+					if(res?.location?.lat != res?.vendor?.location?.lat || res?.location?.long != res?.vendor?.location?.long)
+					{
+						L.Routing.control({
+							waypoints: [
+								L.latLng(res?.location?.lat, res?.location?.long),
+								L.latLng(res?.vendor?.location?.lat, res?.vendor?.location?.long)
+							],
+							useZoomParameter: true,
+							pointMarkerStyle: {display:'none'},
+							draggableWaypoints: false,
+							summaryTemplate:(info) => {
+									let summary = {
+											distance : info?.distance,
+											time : info?.time
+									}
+							}
+						}).addTo(map);
+
+						listenForRider(map)
+					}
+	
+					setLoading(false)
+				})
+			}
+
+
+    }, [])
 
     // location watch
     useEffect(() => {
@@ -287,7 +351,7 @@ const MapComp = (props) => {
     useEffect(() => {
         let isMounted = true
 
-        if(userSelector.length === 0 && isMounted) {
+        if(userSelector.length === 0 && isMounted && paramsRider === null) {
              apiUser().then(res => {
                 if (res.status === 200){
                     if(res.data.location !== null) {
@@ -339,6 +403,7 @@ const MapComp = (props) => {
             })
             .then((result) => {
                 window.marker.setLatLng(e?.target?._latlng)
+
                 let location = {
                     'city': result.address.suburb || result.address.town || result.address.city,
                     'state':  result.address.region || result.address.county,
@@ -373,19 +438,26 @@ const MapComp = (props) => {
                 Toast.fail('Someting went wrong', 2);
             })
         }
-    }
+    }	
+
+		// if(loading) return ''
 
     return (
       <div className="map-container">
         <Map
             center={center}
-            zoom="16"
+						minZoom="6"
+            maxZoom="18"
+            zoom="15"
             keyboard={true}
             doubleClickZoom={true}
             scrollWheelZoom={true}
             ref={leafletMap}
-        ><TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors" />
-
+        >
+            <TileLayer 
+                url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png" 
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors" 
+            />
             {/* all vendor locations  */}
             {   
                 allLocations?.map((res, key) => (
@@ -398,6 +470,7 @@ const MapComp = (props) => {
                 ))
             }
 
+					{ paramsRider === null ?   
             <Search
                   onChange={searchEvent}
                   position="topleft"
@@ -415,16 +488,19 @@ const MapComp = (props) => {
                   }}
             >
             </Search>
+						 : null}
         </Map>
-
-          <Button type={"primary"}
-                  onClick={saveLocation}
-                  className={"px-4 text-white position-absolute text-uppercase"}
-                  style={{ zIndex: "9999999", right: "14px", left : "14px", bottom: "15px",fontWeight: "400",
-                      letterSpacing: ".5px",
-                      fontSize: "16px"}}>
-              Confirm Address
-          </Button>
+                  
+            { paramsRider === null ?   
+                <Button type={"primary"}
+                    onClick={saveLocation}
+                    className={"px-4 text-white position-absolute text-uppercase"}
+                    style={{ zIndex: "9999999", right: "14px", left : "14px", bottom: "15px",fontWeight: "400",
+                        letterSpacing: ".5px",
+                        fontSize: "16px"}}>
+                Confirm Address
+                </Button> : null
+            }
       </div>
     );
 }

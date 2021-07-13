@@ -1,138 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-          integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#db2b39" />
+  <meta name="apple-mobile-web-app-title" content="Sathixa" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <!-- <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"> -->
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
-<!--    <link rel="stylesheet" href="./global.css">-->
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
 
-    <title>Sathixa</title>
+  <script src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
+  <!--    <link rel="stylesheet" href="./global.css">-->
 
-<!--    <style>-->
-<!--      td.keyboard-confirm {-->
-<!--        visibility: hidden;-->
-<!--      }-->
-<!--      td.keyboard-confirm:before {-->
-<!--        content:'Return';-->
-<!--        visibility: visible;-->
-<!--        display: block;-->
-<!--        position: absolute;-->
-<!--        color: #fff;-->
-<!--        padding: 40px 0px;-->
-<!--        top: 0;left: 0;right: 0;bottom: 0;-->
-<!--        font-size: 21px;-->
-<!--        background-color: #db2b39;-->
-<!--      }-->
+  <title>Sathixa</title>
 
-<!--    </style>-->
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+</head>
 
-    <div id="root"></div>
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <script>
+  <div id="root"></div>
+<!-- 
+  <script>
+    if ('addEventListener' in document) {
+      document.addEventListener('DOMContentLoaded', function() {
+        FastClick.attach(document.body);
+      }, false);
+    }
+    if(!window.Promise) {
+      document.writeln('<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"'+'>'+'<'+'/'+'script>');
+    }
 
-      // if ('addEventListener' in document) {
-      //   document.addEventListener('DOMContentLoaded', function() {
-      //     FastClick.attach(document.body);
-      //   }, false);
-      // }
-      // if(!window.Promise) {
-      //   document.writeln('<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"'+'>'+'<'+'/'+'script>');
-      // }
+    if('serviceWorker' in navigator)
+    {
+      window.addEventListener( 'load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+        .then( res => console.log('success:' + res.scope) )
+        .catch( err => console.log(err) )
+      })
 
-      // if('serviceWorker' in navigator)
-      // {
-      //   window.addEventListener( 'load', () => {
-      //     navigator.serviceWorker.register('./service-worker.js')
-      //     .then( res => console.log('success:' + res.scope) )
-      //     .catch( err => console.log(err) )
-      //   })
+      let deferredPrompt;
 
-      //   let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI notify the user they can install the PWA
+        // showInstallPromotion();
+        // Optionally, send analytics event that PWA install promo was shown.
+        console.log(`'beforeinstallprompt' event was fired.`);
+      });
 
-      //   window.addEventListener('beforeinstallprompt', (e) => {
-      //     // Prevent the mini-infobar from appearing on mobile
-      //     e.preventDefault();
-      //     // Stash the event so it can be triggered later.
-      //     deferredPrompt = e;
-      //     // Update UI notify the user they can install the PWA
-      //     // showInstallPromotion();
-      //     // Optionally, send analytics event that PWA install promo was shown.
-      //     console.log(`'beforeinstallprompt' event was fired.`);
-      //   });
-
-      //   // buttonInstall.addEventListener('click', async () => {
-      //   //   // Hide the app provided install promotion
-      //   //   hideInstallPromotion();
-      //   //   // Show the install prompt
-      //   //   deferredPrompt.prompt();
-      //   //   // Wait for the user to respond to the prompt
-      //   //   const { outcome } = await deferredPrompt.userChoice;
-      //   //   // Optionally, send analytics event with outcome of user choice
-      //   //   console.log(`User response to the install prompt: ${outcome}`);
-      //   //   // We've used the prompt, and can't use it again, throw it away
-      //   //   deferredPrompt = null;
-      //   // });
-
-      //   window.addEventListener('appinstalled', () => {
-      //     // Hide the app-provided install promotion
-      //     hideInstallPromotion();
-      //     // Clear the deferredPrompt so it can be garbage collected
-      //     deferredPrompt = null;
-      //     // Optionally, send analytics event to indicate successful install
-      //     console.log('PWA was installed');
-      //   });
-
-      //   function getPWADisplayMode() {
-      //     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-      //     if (document.referrer.startsWith('android-app://')) {
-      //       return 'twa';
-      //     } else if (navigator.standalone || isStandalone) {
-      //       return 'standalone';
-      //     }
-      //     return 'browser';
-      //   }
-
-      //   window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt) => {
-      //     let displayMode = 'browser';
-      //     if (evt.matches) {
-      //       displayMode = 'standalone';
-      //     }
-      //     // Log display mode change to analytics
-      //     console.log('DISPLAY_MODE_CHANGED', displayMode);
-      //   });
-      // }
-
-    </script>
+      // buttonInstall.addEventListener('click', async () => {
+      //   // Hide the app provided install promotion
+      //   hideInstallPromotion();
+      //   // Show the install prompt
+      //   deferredPrompt.prompt();
+      //   // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        // Optionally, send analytics event with outcome of user choice
+        console.log(`User response to the install prompt: ${outcome}`);
+        // We've used the prompt, and can't use it again, throw it away
+        deferredPrompt = null;
 
 
-  </body>
+      window.addEventListener('appinstalled', () => {
+        // Hide the app-provided install promotion
+        hideInstallPromotion();
+        // Clear the deferredPrompt so it can be garbage collected
+        deferredPrompt = null;
+        // Optionally, send analytics event to indicate successful install
+        console.log('PWA was installed');
+      });
+
+      function getPWADisplayMode() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        if (document.referrer.startsWith('android-app://')) {
+          return 'twa';
+        } else if (navigator.standalone || isStandalone) {
+          return 'standalone';
+        }
+        return 'browser';
+      }
+
+      window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt) => {
+        let displayMode = 'browser';
+        if (evt.matches) {
+          displayMode = 'standalone';
+        }
+        // Log display mode change to analytics
+        console.log('DISPLAY_MODE_CHANGED', displayMode);
+      });
+    }
+  </script>
+ -->
+
+</body>
+
 </html>

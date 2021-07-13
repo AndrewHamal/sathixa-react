@@ -1,33 +1,10 @@
-<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="height: 100%; width: 100%; background: transparent; shape-rendering: auto;" width="212px" height="212px">
-    <style>
-
-        @keyframes buttonTransition {
-            from {
-                    r: 50%;
-                }
-            to {
-                r: 90%;
-            }
-        }
-        .innerCircle {
-            animation-duration: 3s;
-            animation-iteration-count: infinite;
-            animation-name: buttonTransition;
-        }
-
-    </style>
-
-    <g class="ldl-scale" style="transform-origin: 50% 50%; transform: rotate(0deg) scale(0.58, 0.58);"><g class="ldl-ani">
-        <g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 50px 50px; transform: scale(0.91); animation: 3.7037s linear -2.46914s infinite normal forwards running breath-166af2be-7f03-42da-b703-aaa5489a9a5b;">
-            <circle class="innerCircle" fill="#77a4bd" r="40" cy="50" cx="50" style="fill: rgba(219, 43, 57, 0.318);"></circle>
-        </g>
-        </g>
-        <g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 50px 50px; transform: scale(0.91); animation: 3.7037s linear -3.08642s infinite normal forwards running breath-166af2be-7f03-42da-b703-aaa5489a9a5b;"><circle fill="#f8b26a" r="27" cy="50" cx="50" style="fill: rgb(219, 43, 57);">
-
-        </circle>
-        </g>
-        </g>
-        <g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 50px 50px; transform: scale(0.91); animation: 3.7037s linear -3.7037s infinite normal forwards running breath-166af2be-7f03-42da-b703-aaa5489a9a5b;"><circle fill="#e15b64" r="14" cy="50" cx="50" style="fill: rgba(219, 43, 57, 0.416);"></circle></g></g>
-</g></g></svg>
-
-
+<svg width="1357" height="1357" viewBox="0 0 1357 1357" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M926.575 248.275C851.09 204.694 765.463 181.75 678.3 181.75C591.137 181.75 505.51 204.694 430.025 248.275L678.3 678.3L926.575 248.275Z" fill="url(#paint0_linear)"/>
+<circle cx="677.5" cy="678.5" r="144" fill="#DB2B39" stroke="#FADFE1" stroke-width="37"/>
+<defs>
+<linearGradient id="paint0_linear" x1="634.773" y1="178.393" x2="645.717" y2="605.77" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DB2B39" stop-opacity="0"/>
+<stop offset="1" stop-color="#DB2B39"/>
+</linearGradient>
+</defs>
+</svg>

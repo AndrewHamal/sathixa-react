@@ -7,18 +7,18 @@ export function submitPackage(data)
         .then(res => res ).catch(err => { throw err.response} )
 }
 
-export function getPackages(search, page)
+export function getPackages(search, page, type)
 {
     return authClient
-        .get(`package?type=&page=${page}&search=${search}`)
-        .then(res => res ).catch(err => err.response )
+        .get(`package?page=${page}&search=${search}&type=${type}`)
+        .then(res => res ).catch(err => { throw err.response } )
 }
 
 export function getLocations()
 {
     return authClient
         .get('location')
-        .then(res => res ).catch(err => err.response )
+        .then(res => res ).catch(err => { throw err.response } )
 }
 
 export function storeLocation(data)
@@ -26,4 +26,11 @@ export function storeLocation(data)
        return authClient
         .post('location', data)
         .then(res => res ).catch(err => { throw err.response })
+}
+
+export function getPackage(id) 
+{
+    return authClient
+    .get(`package/${id}`)
+    .then(res => res ).catch(err => { throw err.response })
 }

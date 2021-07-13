@@ -1,14 +1,12 @@
-import {Link, useHistory} from "react-router-dom";
-import { imagePath } from '../../services/assetsHelper'
-import 'antd/dist/antd.css';
-import {useEffect, useState} from "react";
-import { Typography, Space, Layout, Drawer, PageHeader } from 'antd';
-import { Button } from 'antd-mobile';
-import {apiUser} from "../../api/vendor/dashboard";
-import {useDispatch, useSelector} from "react-redux";
+import { useHistory } from "react-router-dom";
+import { imagePath } from '@/services/assetsHelper'
+import { useEffect, useState } from "react";
+import { Button, NoticeBar } from 'antd-mobile';
+import { Typography, Layout, Drawer, PageHeader } from 'antd';
+import { apiUser } from "@/api/vendor/dashboard";
+import { useDispatch, useSelector } from "react-redux";
 
-import { userStore, getUser } from "../../reducers/reducers";
-import { NoticeBar } from 'antd-mobile';
+import { userStore, getUser } from "@/reducers/reducers";
 
 const Dashboard = () => {
     const [visible, setVisible] = useState(false);
@@ -33,7 +31,6 @@ const Dashboard = () => {
             apiUser().then(res => {          
                 if(res.data.location !== null) {
                     dispatch(userStore(res.data))
-                    console.log(res)
                 }
             })
         }

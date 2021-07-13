@@ -1,4 +1,4 @@
-import { createElement, useState } from "react";
+import { useState } from "react";
 import 'react-rangeslider/lib/index.css'
 import { useHistory } from "react-router-dom";
 import { apiCategory } from "../../api/vendor/dashboard"
@@ -7,9 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { submitPackage } from "../../api/vendor";
 import { Upload, Button, Slider, Layout, PageHeader, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { List, InputItem, Toast } from 'antd-mobile';
-import { packageStore, storePackageForm, getPackageForm } from "@/reducers/reducers";
-import { createForm } from 'rc-form';
+import { InputItem, Toast } from 'antd-mobile';
+import { storePackageForm, getPackageForm, packageStore} from "@/reducers/reducers";
+import { dataURLtoFile } from "@/helper/helper"
 
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
 let moneyKeyboardWrapProps;
@@ -43,6 +43,7 @@ const SendPackage = () => {
             files: [...prevState.files, file]
         }))
 
+        
         return false;
     }
 
@@ -70,15 +71,15 @@ const SendPackage = () => {
         })
 
         if(typeof packageFormSelector?.value?.files !== "undefined" && packageFormSelector?.value?.files?.length != 0){ 
-            Object.entries(packageFormSelector?.value?.files).map(v => {
-                formData.append('image[]', v[1]);
+            packageFormSelector?.value?.files.map(v => {
+                formData.append('image[]', dataURLtoFile(v, 'image' + Math.random()));
             }) 
         }else {
             fileAll.files.forEach((image, i) => {
                 formData.append('image[]', image);
             })
         }
-
+    
         if(packageFormSelector?.value?.weight !== null && typeof packageFormSelector?.value?.weight !== "undefined") {
             formData.append('weight' , packageFormSelector?.value?.weight)
         }else{
@@ -88,12 +89,12 @@ const SendPackage = () => {
         submitPackage(formData)
         .then(res => {
             setDisable(false)
-            // document.getElementById('form').reset()
-            // setError([])
-            // history.push('/package')
-            // Toast.success(res.data.message, 2)
-            // dispatch(packageStore([]))
-            // dispatch(storePackageForm([]))
+            document.getElementById('form').reset()
+            setError([])
+            history.push('/package')
+            Toast.success(res.data.message, 2)
+            dispatch(packageStore([]))
+            dispatch(storePackageForm([]))
         }).catch(err => {
             setDisable(false)
             setError(err.data.errors)
@@ -147,12 +148,25 @@ const SendPackage = () => {
         }
     }
 
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
     const handleLocation = () => {
-        let files = []
-        fileAll.files.map(v => {
-            files.push(v)
+        const getFile = fileAll.files.map(v => new Promise((resolve, reject) => {
+            toBase64(v)
+            .then(res => {
+                resolve(res)
+            })
+        }))
+
+        Promise.all(getFile)
+        .then(res => { 
+            dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector?.value, ['files']: res } }))
         })
-        dispatch(storePackageForm({ ...packageFormSelector, value: { ...packageFormSelector?.value, ['files']: files } }))
 
         history.push('/map-search?from=sendpackage')
     }
@@ -276,25 +290,24 @@ const SendPackage = () => {
                      placeholder={"Write a messages..."}></textarea>
                 </div>
                         
-                {
-                    packageFormSelector?.value?.receiver_address?.whole_address ?
-                    <div className="form-group">
-                        <Upload
-                            listType="picture"
-                            multiple={true}
-                            beforeUpload={handleChange}
-                            onRemove = {deleteFile}
-                            accept={'image/*'}
-                            FileList={[]}
-                        >
-                            <Button icon={<UploadOutlined />} className={"btn-none"}>Upload Image</Button>
-                        </Upload>
+                <div className="form-group">
+                    <Upload
+                        listType="picture"
+                        multiple={true}
+                        beforeUpload={handleChange}
+                        onRemove = {deleteFile}
+                        accept={'image/*'}
+                        FileList={[]}
+                    >
+                        <Button icon={<UploadOutlined />} className={"btn-none"}>Upload Image</Button>
+                    </Upload>
+                    
+                    { typeof packageFormSelector?.value?.files !== "undefined" && packageFormSelector?.value?.files.length > 0 ?
+                        <small className="text-warning">* { packageFormSelector?.value?.files.length } file stored </small>
+                    :"" }
 
-                    </div>
-                    : ""
-                }
-          
-
+                </div>
+        
                 <div className={"form-group"}>
                     <p htmlFor="" className={"text-black font-weight-bold"}>Total Amount : Rs.200</p>
                 </div>

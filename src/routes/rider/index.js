@@ -10,6 +10,7 @@ const Profile = React.lazy(() => import("@/pages/rider/Profile"))
 const Package = React.lazy(() => import("@/pages/rider/Pack"))
 const ProfileEdit = React.lazy(() => import("@/pages/rider/ProfileEdit"))
 const Document = React.lazy(() => import("@/pages/rider/Documents"))
+const PackageDetail = React.lazy(() => import("@/pages/rider/packageDetail"))
 
 const routes = {
    dashboard : {
@@ -47,6 +48,10 @@ const routes = {
    document : {
       path: "/document",
       component: <Document />,
+   },
+   packageDetail : {
+      path: "/package-detail/:id",
+      component: <PackageDetail />,
    },
 
 }

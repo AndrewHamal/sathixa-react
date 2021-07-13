@@ -4,6 +4,7 @@ const CACHE_NAME = "offline";
 // Customize this with a different URL if needed.
 const OFFLINE_URL = "offline.html";
 const self = this
+// Notification.requestPermission();
 self.addEventListener("install", (event) => {
     event.waitUntil(
         (async () => {
@@ -65,3 +66,35 @@ self.addEventListener("fetch", (event) => {
     }
 
 });
+
+let requestCounter = 0;
+
+self.addEventListener('install', function(e) {
+  console.log('[ServiceWorker] Install');
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(e) {
+  console.log('[ServiceWorker] Activate');
+  return self.clients.claim();
+});
+
+self.addEventListener('fetch', function(e) {
+  if ('setAppBadge' in navigator) {
+    navigator.setAppBadge(++requestCounter);
+  }
+  console.log('[Service Worker] Fetch', e.request.url);
+  e.respondWith(fetch(e.request));
+});
+
+async function showNotification() {
+	const result = await Notification.requestPermission();
+	if (result === 'granted') {
+		const noti = new Notification('Hello!', {
+			body: 'It’s me.',
+			icon: 'mario.png'
+		});
+		noti.onclick = () => alert('clicked');
+	}
+}
+showNotification();

@@ -7,6 +7,9 @@ import { setToken } from "@/reducers/rider/reducers"
 import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "../../api/vendor/login";
 import { Toast } from "antd-mobile"
 import { useDispatch } from "react-redux"
+import '@/assets/css/login.css'
+import { Helmet } from "react-helmet";
+
 
 const Login = (props) => {
     const [data, setState] = useState({email:'', password:''})
@@ -39,7 +42,7 @@ const Login = (props) => {
                 setDisableSubmit( false)
                 dispatch(setToken(true))
                 localStorage.setItem('_riderToken', res.data.token)
-                history.push('/rider/dashboard')
+                history.push('/dashboard')
 
             }).catch(err => {
                 setLoader(false)
@@ -91,7 +94,7 @@ const Login = (props) => {
             setDisableSubmit(false)
             dispatch(setToken(true))
             localStorage.setItem('_riderToken', resp?.data?.access_token)
-            history.push('/rider/dashboard')
+            history.push('/dashboard')
         }).catch(err => {
             setLoader(false)
             setDisableSubmit(false)
@@ -176,9 +179,9 @@ const Login = (props) => {
     }
 
     return (
-
+        <>
         <div>
-            <section className="container mt-4 px-2">
+            <section className="container pt-4 px-2">
                 <div className="col-md-12 text-center">
                     <ul className="nav nav-pills mb-5" id="pills-tab" role="tablist">
                         <li className="nav-item">
@@ -359,6 +362,7 @@ const Login = (props) => {
                 </div>
             </section>
         </div>
+        </>
     )
 }
 

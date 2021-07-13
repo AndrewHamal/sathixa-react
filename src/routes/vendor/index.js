@@ -7,11 +7,12 @@ const Success = React.lazy(() => import("@/pages/vendor/Success"))
 const MapSearch = React.lazy(() => import("@/pages/vendor/MapSearch"))
 const Inbox = React.lazy(() => import("@/pages/rider/Inbox"))
 const Profile = React.lazy(() => import("@/pages/rider/Profile"))
+const PackageTrack = React.lazy(() => import("@/pages/vendor/PackageTrack"))
 
 const routes = {
    dashboard : {
-path: "/dashboard",
-    component: <Dashboard />,
+		path: "/dashboard",
+		component: <Dashboard />,
    },
    packages : {
     path: "/package",
@@ -36,6 +37,10 @@ path: "/dashboard",
    profile : {
     path: "/profile",
     component: <Profile />,
+   },
+   packageTrack : {
+      path: "/package-detail/:id",
+      component: <PackageTrack />,
    },
 
 }

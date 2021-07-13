@@ -45,7 +45,6 @@
     z-index:99999;
 }
 
-
 body,
 html {
     line-height: unset!important;
@@ -55,7 +54,13 @@ html {
     font-family: "Open Sans", sans-serif!important;
     max-width: 100vw;
     /*height: 100vh;*/
-    background-color: #fafafa !important;
+    background-color: #db2b39 !important;
+}
+
+#root {
+    /* display: -webkit-box; */
+    height: 100%;
+    background: #fafafa!important;
 }
 
 .bg-red {
@@ -67,7 +72,7 @@ html {
 }
 
 p {
-    line-height: 1.1;
+    line-height: 1.4;
     margin-bottom: 0px!important;
     color: #495867;
 }
@@ -176,8 +181,13 @@ color: unset!important;
 }
 
 .site-page-header-white, .site-page-header{
-    padding: 14px!important;
+    padding: 7px 14px!important;
     box-shadow: 0px 5px 12px rgb(0 0 0 / 7%)!important;
+}
+
+.ant-page-header-heading-title{
+    font-weight: 500!important;
+    font-size: 18px!important;
 }
 
 .ant-page-header-heading-extra {
@@ -480,7 +490,7 @@ div.am-segment-item-selected {
 .total-order-card {
     padding: 8px;
     border-radius: 5px;
-    background: #f4f4f4!important;
+    background: #da2b3908!important;
 }
 
 .site-page-header-white .ant-page-header-heading, .site-page-header-white .ant-page-header-heading-left, .site-page-header-white .ant-page-header-heading-title  {
@@ -711,6 +721,13 @@ div.am-segment-item-selected {
     text-shadow: 1px 1px #fff;
     font-weight: 500;
     font-size: 10pt;
+}
+
+.package-card-date {
+    color: #acacac;
+    font-size: 10px;
+    padding-top: 1px;
+    font-weight: 600;
 }
 
 .custom-file:hover::before {
@@ -962,7 +979,7 @@ div.am-segment-item-selected {
     background: #fff;
     padding-top: 12px;
     padding-bottom: 23px;
-    box-shadow: 0px -5px 12px rgba(0, 0, 0, 0.07);
+    /* box-shadow: 0px -5px 12px rgba(0, 0, 0, 0.07); */
     /* border-top: 1px solid #C4C4C4; */
     position: fixed;
     right: 0;
@@ -1097,11 +1114,17 @@ div.am-segment-item-selected {
 }
 
 .package-card {
-  border-radius: 19px;
+  border-radius: 14px;
   background-color: white;
   padding: 13px;
   border: 1px solid #5957570d;
 }
+
+.sigCanvas {
+    width: 100%;
+    height: 60vh;
+}
+
 .width-pack {
   width: 65px;
   height: auto;
@@ -1116,6 +1139,27 @@ table {
   max-width: unset;
   margin-bottom: unset;
   background-color: unset;
+}
+
+.am-modal-wrap, .am-modal-mask{
+    z-index: 99999999!important;
+}
+
+.leaflet-routing-alt {
+    visibility: hidden
+}
+.leaflet-routing-container {
+    visibility: hidden;
+    border: unset!important;
+    padding: 5px!important;
+}
+
+.leaflet-interactive{
+    stroke: rgba(219, 43, 57, .4);
+    stroke-opacity: 0.4;
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 td {
@@ -1319,14 +1363,14 @@ td {
 }
 
 .common-map .search-input{
-    top: -2px;
+    top: -1px;
     background: transparent;
     font-size: 15px!important;
 }
 
 .profile-pop {
     position: absolute;
-    z-index: 9999;
+    z-index: 99;
     right: 6px;
     top: 16px;
 }
@@ -1349,6 +1393,67 @@ td {
 
 .rider-accept {
     position: absolute;
-    z-index: 999;
+    z-index: 0;
     bottom: 16px;
+    transition: all 0.2s ease 0s;
+}
+
+.show-detail-dialog {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    background: #fff;
+    padding: 4px 0;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    box-shadow: 0 0 13px 0 rgb(0 0 0 / 20%);
+}
+
+.locate-me {
+    top: 71px;
+    position: absolute;
+    z-index: 9999;
+    background: #fff;
+    right: 14px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    box-shadow: 0 0 13px 0 rgb(0 0 0 / 20%);
+    padding: 6px;
+}
+
+.step .ant-steps-item-description {
+    font-size: 13px!important;
+}
+
+.step .ant-steps-item-title {
+    font-weight: 600!important;
+}
+.leaflet-div-icon {
+    background: unset!important;
+    border: unset!important;
+}
+
+.accurate svg {
+    stroke-opacity: 1!important
+}
+
+.accurate svg path {
+    stroke: transparent;
+    transform-origin: 50%;
+}
+
+.leaflet-div-icon {
+    z-index: 99999!important;
+}
+
+.am-pagination .am-button {
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.am-pagination-wrap{
+    font-size: 16px!important;
 }
