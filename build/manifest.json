@@ -1,0 +1,22 @@
+{
+  "short_name": "Sathixa",
+  "name": "sathixa",
+  "description": "All new nepali app",
+  "icons": [
+    {
+      "src": "/Cdemu_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Icon_Bird_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/rider/login",
+  "theme_color": "#db2b39",
+  "background_color": "#db2b39",
+  "display": "standalone",
+  "scope": "/"
+}
