@@ -1,5 +1,4 @@
 import { useState } from "react";
-import 'react-rangeslider/lib/index.css'
 import { useHistory } from "react-router-dom";
 import { apiCategory } from "../../api/vendor/dashboard"
 import { category, getCategories } from "../../reducers/reducers";
