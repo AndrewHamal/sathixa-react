@@ -39,8 +39,6 @@ const PackageTrack = () => {
         setData(res.data)
         setLoading(false)
       })
-
-
   }, [])
 
   const showModal = () => {
@@ -146,13 +144,15 @@ const PackageTrack = () => {
                       <a className="mr-1 w-100" href={`tel:${data?.rider?.phone}`}>
                         <Button type="primary" className="my-2 flex-fill w-100 ">
                           <i className="fas fa-phone-volume pr-2 text-white"></i>
-                        Call Vendor
+                        Call Rider
                       </Button>
                       </a>
-                      <Button type="default" className="my-2 flex-fill w-100 ml-1">
-                        <i className="far fa-comment-dots pr-2"></i>
-                      Message
-                    </Button>
+                      <Link to={'/chat/' + id} className="my-2 flex-fill w-100 ml-1">
+                        <Button type="default" className="w-100">
+                          <i className="far fa-comment-dots pr-2"></i>
+                          Message
+                        </Button>
+                      </Link>
                     </div>
                     : ""
                   }
@@ -178,18 +178,3 @@ const PackageTrack = () => {
 };
 
 export default PackageTrack;
-{/* <Modal
-        visible={isModalVisible}
-        footer={null}
-        onCancel={handleCancel}
-        style={{ top: 20 }}
-      >
-        <img src={Verify}></img>
-        <p className="text-center text-lg f-w-600">Need Verification</p>
-        <p className="heading-sm  text-center heading-l">
-          We need to verify you before you proceed with our service.
-        </p>
-        <Button block type="primary" className="my-2">
-          Verify Now
-        </Button>
-      </Modal> */}

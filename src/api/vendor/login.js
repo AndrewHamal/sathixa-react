@@ -3,8 +3,8 @@ import apiClient from "@/services/api";
 export function apiLogin(data) {
     return apiClient.get('sanctum/csrf-cookie')
         .then(response => {
-            return apiClient.post('api/rider/login', data)
-                .then(response => response)
+            return apiClient.post('api/vendor/login', data)
+                .then(response => response.data)
                 .catch(err => { throw err.response })
         })
 }

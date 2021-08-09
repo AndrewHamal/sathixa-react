@@ -1,0 +1,37 @@
+name: Generate a build and push to production branch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Push
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v2
+
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install # will run `yarn install` command
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: build # will run `yarn build` command
+        env:
+          CI: false
+          REACT_APP_URL: "https://rider.sathichha.com/"
+          NODE_ENV: "production"
+          REACT_APP_API_URL: "https://api.sathichha.com/"
+          REACT_APP_BROADCAST : "pusher"
+          REACT_APP_PUSHER_KEY : "f1420c508647e4f94ca3"
+
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: production # The branch name where you want to push the assets
+          FOLDER: build
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
+          MESSAGE: "Build: ({sha}) {msg}" # The commit message

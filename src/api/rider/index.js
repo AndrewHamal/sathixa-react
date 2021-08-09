@@ -85,3 +85,66 @@ export function saveCancelReason(formData)
     .then(res => res)
     .catch(err => {throw err})
 }
+
+export function getChatRider(id) 
+{
+    return authClient
+    .get(`chat/${id}`)
+    .then(res => res ).catch(err => { throw err.response })
+}
+
+export function storeChatRider(formData) 
+{
+    return authClient
+    .post(`chat`, formData)
+    .then(res => res ).catch(err => { throw err.response })
+}
+
+export function updateProfile($id, formData)
+{
+    return authClient
+    .post(`riders/${$id}`, formData)
+    .then(res => res).catch(err => { throw err })
+
+}
+
+export function removeLicense($id)
+{
+    return authClient
+    .post(`license/destroy/${$id}`)
+    .then(res => res).catch(err => { throw err })
+
+}
+
+export function removeID($id)
+{
+    return authClient
+    .post(`photo-proof/destroy/${$id}`)
+    .then(res => res).catch(err => { throw err })
+
+}
+
+export function removeInsurance($id)
+{
+    return authClient
+    .post(`insurance/destroy/${$id}`)
+    .then(res => res).catch(err => { throw err })
+
+}
+
+export function logout($id)
+{
+    return authClient
+    .post(`logout`)
+    .then(res => res).catch(err => { throw err })
+
+}
+
+export function seenChatRider(id)
+{
+    return authClient
+    .get(`seen-chat/${id}`)
+    .then(res => res).catch(err => { throw err })
+
+}
+

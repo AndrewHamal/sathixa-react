@@ -9,10 +9,7 @@ import { Skeleton } from "antd"
 import { Helmet } from "react-helmet";
 
 const { TabPane } = Tabs;
-
-const { Step } = Steps;
-
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
 const Pack = () => {
 

@@ -1,5 +1,5 @@
-import apiClient from "../../services/api";
-import authClient from "../../services/auth";
+import apiClient from "@/services/api";
+import authClient from "@/services/auth";
 import axios from "axios";
 
 export const apiRegister = (data) => {
@@ -8,7 +8,7 @@ export const apiRegister = (data) => {
             return response
         })
         .catch(err => {
-            return err.response
+            throw err.response
         })
 }
 
@@ -20,7 +20,7 @@ export const apiLocation = (lat, long) => {
 }
 
 export const apiLocationUpdate = (res) => {
-    return authClient.post('/update-vendor',res)
+    return authClient.post('/update-vendor-location',res)
         .then(res => {
             return res
     })

@@ -11,7 +11,7 @@ import './antdTheme.less';
 import Notif from "./pages/rider/Notif";
 import Delivery from "./pages/rider/Delivery";
 import ProfileEdit from "./pages/rider/ProfileEdit";
-import Documents from "./pages/rider/Documents";
+import Documents from "./pages/vendor/Documents";
 import ProfileRider from "./pages/rider/ProfileRider";
 import authClient from '@/services/auth';
 
@@ -101,36 +101,36 @@ const App = () => {
       prepareRiderRoute()
       prepareVendorRoute()
 
-      if(history.location.pathname === '/'){
-        history.push('/rider/login')
-      }
+    //   if(history.location.pathname === '/'){
+    //     history.push('/rider/login')
+    //   }
   
-      authClientInstance.interceptors.response.use(
-        (response) => Promise.resolve(response),
-        (error) => {
-          const { response } = error;
+    //   authClientInstance.interceptors.response.use(
+    //     (response) => Promise.resolve(response),
+    //     (error) => {
+    //       const { response } = error;
 
-          if (!response.status){
-            return Promise.reject(response);
-          }
+    //       if (!response.status){
+    //         return Promise.reject(response);
+    //       }
 
-          if (response.status === 500) {
-            // notifyAnt['error']({message:"Somthing went wrong. please try again"})
-          }
+    //       if (response.status === 500) {
+    //         // notifyAnt['error']({message:"Somthing went wrong. please try again"})
+    //       }
 
-          if (response.status === 401) { //Unauthenticated
-            dispatch(setToken(false));
-            window.localStorage.removeItem('_riderToken');
-            history.push("/rider/login");
-            // notifyAnt['error']({message:"Session expired"})
-          }
+    //       if (response.status === 401) { //Unauthenticated
+    //         dispatch(setToken(false));
+    //         window.localStorage.removeItem('_riderToken');
+    //         history.push("/rider/login");
+    //         // notifyAnt['error']({message:"Session expired"})
+    //       }
 
-          return Promise.reject(response);
-        },
-      );
+    //       return Promise.reject(response);
+    //     },
+    //   );
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
 
     useEffect(() => {
       console.log(isVendorAuth)
@@ -144,7 +144,7 @@ const App = () => {
           listener();
         }
     
-    }, [history])
+    }, [history, isVendorAuth])
 
     useEffect(() => {
         const completeLoader = () => {
@@ -161,20 +161,27 @@ const App = () => {
      
       }, [getPathname])
 
+    useEffect(() => {
+      if(history.location.pathname.match('login')){
+        document.querySelector('.App')?.classList.remove("mb-100")
+      }else{
+        document.querySelector('.App')?.classList.add("mb-100")
+      }
+    }, [history.location.pathname])
+
     // loader init
 
     return (
         <div>
             <LoadingBar color='#f11946' ref={ref} />
 
-            <div className={ isVendorAuth && window.location.pathname !== "/map-search" ? 'App mb-100' : 'App'} >
+            <div className={ !isVendorAuth && history.location.pathname === "/map-search" ? 'App' : history.location.pathname.match("/chat") ? '' : 'App mb-100'} >
               <Switch>
                 <Route exact path={"/notif"} component={Notif} />
                 <Route exact path={"/delivery"} component={Delivery} />
                 <Route exact path={"/ProfileEdit"} component={ProfileEdit} />
                 <Route exact path={"/Documents"} component={Documents} />
                 <Route exact path={"/ProfileRider"} component={ProfileRider} />
-
 
                 {/* common route  */}
                 <Route exact path={"/test"} component={Test} />
@@ -211,13 +218,7 @@ const App = () => {
                 {history.location.pathname.match('/vendor') ?
                 <Router exact basename="/vendor">
                   <Switch>
-                    <Route exact render={props =>
-                      !isVendorAuth ? (
-                      <Login {...props}/>
-                        ) : (
-                        <Redirect to={{ pathname: '/dashboard' }} />
-                    )} path="/login" />  
-
+                    <Route path="/login" component={Login}/>
                     <VendorLayout 
                       mainHistory={history} 
                       isAuth={isVendorAuth}

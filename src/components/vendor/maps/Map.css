@@ -6,7 +6,7 @@
 }
 
 .leaflet-container {
-  height: calc(100vh - 87px)!important;
+  /* height: calc(81 * var(--vh)); */
   width: 100vw!important;
 }
 
@@ -128,7 +128,7 @@ ul.search-control-info-list {
 
 .leaflet-left .leaflet-control {
   position: absolute;
-  bottom: 57px;
+  bottom: 64px;
   width: -webkit-fill-available;
   margin: 14px;
 }

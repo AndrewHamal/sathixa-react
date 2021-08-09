@@ -1,12 +1,14 @@
-import { useHistory } from "react-router-dom";
-import { useEffect } from "react";
-import { Button } from "antd";
-
-// import PackgeImg from "../../assets/vendor/packageimg.svg";
-import { Steps } from "antd";
-import { PageHeader } from "antd";
-import { Layout, Menu, Breadcrumb } from "antd";
-import { Tabs } from "antd";
+import { Link, useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getPackages } from "@/api/vendor";
+import { onGoingPackage } from "@/api/rider/index"
+import { Layout, PageHeader, Tabs, Skeleton, Badge, Empty } from "antd";
+import { Pagination } from "antd-mobile"
+import { vendorAuth } from '@/reducers/reducers'
+import { isAuthRider } from "@/reducers/rider/reducers"
+import { useSelector } from "react-redux";
+import moment from 'moment'
+import Avatar from "antd/lib/avatar/avatar";
 
 const { TabPane } = Tabs;
 
@@ -14,12 +16,59 @@ function callback(key) {
   console.log(key);
 }
 
-const { Step } = Steps;
+const { Content } = Layout;
 
-const { Header, Content, Footer } = Layout;
+const locale = {
+  prevText: 'Prev',
+  nextText: 'Next',
+};
 
 const Inbox = () => {
   const history = useHistory();
+  const [packages, setPackage] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [lastPage, setLast] = useState(1)
+  const [pages, setPages] = useState(1)
+
+  const isVendor = useSelector(vendorAuth)
+  const isRider = useSelector(isAuthRider)
+
+  function getPackage(page) {
+    getPackages('', page, 1)
+    .then(res => {
+      console.log(res?.data?.last_page)
+      setPackage(res?.data)
+      setLast(res?.data?.last_page)
+      setPages(res?.data?.current_page)
+      setLoading(false)
+    })
+  }
+
+  function onGoingPackages(page) {
+    onGoingPackage(page)
+    .then(res => {
+      setPackage(res.data)
+      setLoading(false)
+    })
+  }
+
+  useEffect(() => {
+    if(isVendor) {
+      getPackage(1) 
+    }
+
+    if(isRider) {
+      onGoingPackages(1)
+    }
+  }, [isRider, isVendor])
+  
+  if(loading) { return <Content
+    className="site-layout"
+    style={{
+      padding: "0 14px",
+      marginTop: 60,
+    }}
+  > <Skeleton active/></Content> }
 
   return (
     <Layout>
@@ -39,107 +88,64 @@ const Inbox = () => {
         <div className="site-layout-background">
           <Tabs defaultActiveKey="1" onChange={callback}>
             <TabPane tab="Messages" key="1" className="mt-2">
-              <div className="d-flex">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
-              <div className="d-flex my-3">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
-              <div className="d-flex my-3">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
-              <div className="d-flex my-3">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
+              {
+                packages.data.length === 0 ?
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
+                :
+                packages.data.map((res, i) => (
+                  <Link to={`/chat/${isVendor ? res?.id : res?.package?.id}`}  key={i}>
+                    <div className="d-flex mb-3">
 
-              <div className="d-flex my-3">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
+                      {
+                        res.new_chat ? 
+                        <Badge dot className="my-auto">
+                          <Avatar className="text-capitalize" style={{ backgroundColor: '#f56a00', verticalAlign: 'center' }} shape="square" size="large" gap={1}>
+                            {  isRider ?
+                              res?.package?.vendor?.first_name.charAt(0)  :
+                              res?.rider?.first_name.charAt(0)
+                            }
+                          </Avatar>
+                        </Badge> : 
+                         <Avatar className="my-auto text-capitalize" style={{ backgroundColor: '#f56a00', verticalAlign: 'center' }} shape="square" size="large" gap={1}>
+                           {  isRider ?
+                             res?.package?.vendor?.first_name.charAt(0)  :
+                             res?.rider?.first_name.charAt(0)
+                           }
+                         </Avatar>
+                      }
 
-              <div className="d-flex my-3">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
+                      <div className="ml-2 d-flex flex-wrap">
+                        <div>
+                          {
+                            isRider ?
+                            <p className="message-heading text-capitalize" style={{lineHeight:'13px'}}>{res?.package?.vendor?.first_name} {res?.package?.vendor?.last_name}</p> :
+                            <p className="message-heading text-capitalize" style={{lineHeight:'13px'}}>{res?.receiver_name}</p>
+                            // {res?.rider?.first_name} {res?.rider?.last_name}  
+                          }
+                        
+                          <p className="message-desc w-100">
+                            { res?.chat_last?.message.substring(0, 50)+' ...' || '....' }
+                          </p>
+                        </div>
+                        <p className="message-time w-100">{ moment(res?.chat_last?.created_at || res?.created_at).fromNow(true) }</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              }
 
-              <div className="d-flex my-3">
-                <img
-                  src="https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
-                  alt=""
-                  className="message-img"
-                />
-                <div className="ml-2 d-flex flex-wrap">
-                  <p className="message-heading">Rider 1</p>
-                  <p className="message-desc">
-                    Your delivery requested has been accepted
-                  </p>
-                  <p className="message-time">3 min ago</p>
-                </div>
-              </div>
+              {
+              lastPage > 1 ?
+                <Pagination 
+                    total={lastPage} 
+                    current={pages} 
+                    locale={locale} 
+                    onChange={e => getPackage(e)}
+                /> : null
+
+              }
+   
+
             </TabPane>
            
             <TabPane tab="Notifications" key="2">

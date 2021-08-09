@@ -15,8 +15,8 @@
     }
   ],
   "start_url": "/rider/login",
-  "theme_color": "#000",
-  "background_color": "#000",
+  "theme_color": "#db2b39",
+  "background_color": "#db2b39",
   "display": "standalone",
   "scope": "/"
 }

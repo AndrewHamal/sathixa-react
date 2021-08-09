@@ -1,18 +1,23 @@
-
-import FeatherIcon from 'feather-icons-react';
 import {useEffect, useState} from "react";
-import {Link, useHistory, useLocation} from "react-router-dom";
-import { TabBar, Icon } from 'antd-mobile'
+import {useHistory, useLocation, useParams} from "react-router-dom";
+import { TabBar } from 'antd-mobile'
+import { countInbox } from "@/api/vendor";
 
 const FooterMenu = () => {
 
     const location = useLocation()
     const [path, setActive] = useState()
     const history = useHistory()
+    const { id } = useParams()
+    const [count, setCount] = useState();
 
     useEffect(() => {
         setActive(location.pathname)
-    },[location])
+        countInbox()
+        .then(res => {
+            setCount(res.data)
+        })
+    },[id, location])
 
     return (
         <div className="footerMenu" style={{ position: 'fixed', width: '100%', bottom: 0 }}>
@@ -41,6 +46,7 @@ const FooterMenu = () => {
                     selectedIcon={ <i className="fa fa-comment-alt fa-lg active"></i> }
                     selected={path === '/inbox' ? true : false}
                     onPress={() => {history.push('/inbox')}}
+                    badge={count}
                     />
 
                 <TabBar.Item
@@ -64,34 +70,6 @@ const FooterMenu = () => {
 
             </TabBar>
         </div>
-        // <div className={'footerMenu px-2 justify-content-between'}>
-        //     <div className={"d-flex"}>
-        //         <div className={"mx-auto"}>
-        //             <div className={"text-center"}>
-        //                 <Link to={'/dashboard'}>
-        //                     <i className={path === '/dashboard' ? 'fa fa-home fa-lg w-100 active' : 'fa fa-home fa-lg w-100' }></i>
-        //                     <span className={ path === '/dashboard' ? 'active' : '' }>Home</span>
-        //                 </Link>
-        //             </div>
-        //         </div>
-        //         <div className={"mx-auto"}>
-        //             <div className={"text-center"}>
-        //                 <Link to={'/package'}>
-        //                     <i className={path === '/package' ? 'fa fa-briefcase fa-lg w-100 active' : 'fa fa-briefcase fa-lg w-100' }></i>
-        //                     <span className={ path === '/package' ? 'active' : '' }>Packages</span>
-        //                 </Link>
-        //             </div>
-        //         </div>
-        //         <div className={"mx-auto"}>
-        //             <div className={"text-center"}>
-        //                 <Link to={'/wallet'}>
-        //                     <i className={"fa fa-wallet fa-lg w-100"}></i>
-        //                     <span className={ path === '/wallet' ? 'active' : '' }>Wallet</span>
-        //                 </Link>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
     )
 }
 

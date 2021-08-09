@@ -71,7 +71,7 @@ const PackageRider = () => {
 			.then(res => {
 				setCancelReason(res.data)
 			}).catch(err => {
-				alert(err.message)
+				// alert(err.message)
 			})
 
 		if (packageDetailSelector === null || packageDetailSelector?.package?.id !== id) {
@@ -79,6 +79,7 @@ const PackageRider = () => {
 		} else {
 			setLoader(false)
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	const getPackageDetail = () => {
@@ -222,7 +223,7 @@ const PackageRider = () => {
 								{
 									packageDetailSelector.process_step !== 3 &&
 									packageDetailSelector?.cancel_ride !== null ?
-										<Button onClick={() => setCancelReasonModal(true)} type="" block className="my-2">
+									<Button onClick={() => setCancelReasonModal(true)} type="" block className="my-2">
 											Cancel Pickup
 									</Button>
 										: ''
@@ -288,15 +289,17 @@ const PackageRider = () => {
 									packageDetailSelector?.cancel_ride === null ?
 									<div className="d-flex" style={packageDetailSelector.process_step !== 3 ? { padding: "0 13px" } : {}}>
 										<a className="mr-1 w-100" href={`tel:${packageDetailSelector?.package?.receiver_phone}`}>
-											<Button type="primary flex-fill w-100 " className="my-2">
+											<Button type="primary flex-fill w-100" className="my-2">
 												<i className="fas fa-phone-volume pr-2 text-white"></i>
 												Call Vendor
 											</Button>
 										</a>
-										<Button type="default flex-fill w-100 ml-1" className="my-2">
-											<i className="far fa-comment-dots pr-2"></i>
-											Message
-										</Button>
+										<Link to={"/chat/"+packageDetailSelector?.package?.id}  className="my-2 flex-fill w-100 ml-1">
+											<Button type="default" className="w-100">
+												<i className="far fa-comment-dots pr-2"></i>
+												Message
+											</Button>
+										</Link>
 									</div> : null
 								}
 							

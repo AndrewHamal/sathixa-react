@@ -10,6 +10,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import { InputItem, Toast } from 'antd-mobile';
 import { storePackageForm, getPackageForm, packageStore} from "@/reducers/reducers";
 import { dataURLtoFile } from "@/helper/helper"
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
 let moneyKeyboardWrapProps;
@@ -20,7 +22,9 @@ if (isIPhone) {
     };
 }
 
-const { Header, Content, Footer } = Layout;
+const antIcon = <LoadingOutlined style={{ fontSize: 18, color:'#fff' }} spin />;
+
+const { Content } = Layout;
 
 const SendPackage = () => {
 
@@ -32,6 +36,7 @@ const SendPackage = () => {
     const [error, setError] = useState([]);
     const [errorPhone, setErrorPhone] = useState(null);
     const history = useHistory()
+    const [loading, setLoading] = useState(false)
 
     const packageFormSelector = useSelector(getPackageForm)
 
@@ -312,7 +317,7 @@ const SendPackage = () => {
                     <p htmlFor="" className={"text-black font-weight-bold"}>Total Amount : Rs.200</p>
                 </div>
                 <div className="btn-container">
-                    <button type="submit" className="btn btn-primary w-100" disabled={disable}>Submit</button>
+                    <button type="submit" className="btn btn-primary w-100" disabled={disable}> {disable ? <Spin indicator={antIcon} /> : 'Submit'} </button>
                 </div>
             </form>
         </div>

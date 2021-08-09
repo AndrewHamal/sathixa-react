@@ -3,14 +3,12 @@ import { Button } from "antd";
 
 import { Layout} from "antd";
 import { Avatar, Form, Input, Skeleton } from "antd";
-import { profile, updateProfile } from "@/api/rider/index";
-import { storeUser, getUser } from "@/reducers/rider/reducers"
+import { apiUser, updateProfile } from "@/api/vendor/dashboard";
+import { userStore, getUser } from "@/reducers/reducers"
 import { useDispatch, useSelector } from "react-redux";
-import { DatePicker, Toast } from "antd-mobile";
-import enUs from 'antd-mobile/lib/date-picker/locale/en_US';
+import { Toast } from "antd-mobile";
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-
 
 const antIcon = <LoadingOutlined style={{ fontSize: 18, color:'#fff' }} spin />;
 const { Content } = Layout;
@@ -19,43 +17,38 @@ const ProfileEdit = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [loader, setLoader] = useState(true);
-  const [dateOfBirth, setDate] = useState(null);
-  const [loading, setLoading] = useState(false);
   const userSelector = useSelector(getUser);
+  const [loading, setLoading] = useState(false);
 
   function onFinish(e){
     setLoading(true)
+    
     let formData = new FormData();
     for (const [key, value] of Object.entries(e)) {
-      if(typeof value !== "undefined" && value !== null)
+      if(typeof value !== "undefined")
         formData.append(key, value)
     }
 
-    formData.append('_method', 'PATCH')
-    
-    updateProfile(userSelector.id, formData)
+    updateProfile(formData)
     .then(res => {
-      Toast.success(res.data.message)
+      Toast.success(res?.data?.message)
       setLoading(false)
     }).catch(err => {
-  
-      setLoading(false)
       Object.entries(err?.data?.errors).forEach(res => {
         res[1].forEach(res => {
           Toast.fail(res)
         })
       })
-
-
+      setLoading(false)
     })
   }
 
   useEffect(() => {
 
-    if(userSelector === null ){
-      profile()
+    if(userSelector.length === 0){
+      apiUser()
       .then(res => {
-        dispatch(storeUser(res.data));
+        dispatch(userStore(res.data));
         setLoader(false)
       })
     }else{
@@ -63,13 +56,6 @@ const ProfileEdit = () => {
     }
 
   }, [dispatch, userSelector])
-
-  function dateHandle(e) {
-    console.log(e)
-    form.setFieldsValue({
-      date_of_birth: new Date(e).getFullYear()+'-'+ (new Date(e).getMonth() + 1) +'-'+new Date(e).getDate()
-    })
-  }
 
   if(loader) { return <Content
     className="site-layout"
@@ -97,11 +83,11 @@ const ProfileEdit = () => {
               backgroundColor: "#fde3cf",
             }}
           >
-            {userSelector.first_name.charAt(0)}{userSelector.last_name.charAt(0)}
+            { userSelector.first_name.charAt(0).toUpperCase() }{ userSelector.last_name.charAt(0).toUpperCase() }
           </Avatar>
 
           <div className="pl-2 my-auto">
-            <p className="font-14 f-w-500">{userSelector.first_name} {userSelector.last_name}</p>
+            <p className="font-14 f-w-500 text-capitalize">{userSelector.first_name} {userSelector.last_name}</p>
             <p className="faded-text-sm pt-1"> {userSelector.phone}</p>
           </div>
           <i className="fas fa-check-circle text-green"></i>
@@ -157,24 +143,9 @@ const ProfileEdit = () => {
           <Input placeholder="+977 9800000000"/>
         </Form.Item>
 
-        <DatePicker
-          mode="date"
-          value={dateOfBirth}
-          locale={enUs}
-          extra={false}
-          maxDate={new Date() }
-          minDate={new Date(1880)}
-          onChange={d => {dateHandle(d); setDate(d)}}
-        >
-          <Form.Item label="Date of Birth" name="date_of_birth" formlayout="Vertical">
-            <Input placeholder="04-01-1990"/>
-          </Form.Item>
-        </DatePicker>
-
-          {/* {  typeof date.d !== "undefined" ? date.d : '' } */}
         <Form.Item>
-          <Button type="primary" block htmlType={"submit"} className="pb-3">
-          {loading ? <Spin indicator={antIcon} /> : 'Update'} 
+          <Button type="primary" block htmlType={"submit"}>
+            {loading ? <Spin indicator={antIcon} /> : 'Update'} 
           </Button>
         </Form.Item>
       </Form>

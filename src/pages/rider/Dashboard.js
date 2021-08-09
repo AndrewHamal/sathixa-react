@@ -64,6 +64,7 @@ const RiderAccept = (props) => {
 
     return () => { isMounted = false }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packageAlert])
 
   function fetchRecentPackage() {
@@ -241,7 +242,7 @@ const RiderAccept = (props) => {
 
   return (
     <Layout>
-    <section className="vh-100 map-bg position-relative">
+    <section className="vhc-100 map-bg position-relative">
     
       <div className="common-map position-relative">
         <div className="col-2 my-auto profile-pop">
@@ -276,7 +277,7 @@ const RiderAccept = (props) => {
                 </div>
                 { packageAlert?.process_step !== null ?
                   <div className="ml-auto pl-3 mr-2 text-right">
-                    <a href={`tel:${packageAlert?.vendor?.phone}`}><button className="btn btn-sm text-dark">
+                    <a href={`tel:${packageAlert?.vendor?.phone}`}><button className="btn btn-sm bg-light text-dark">
                       <PhoneOutlined />
                     </button></a>
                   </div> : 

@@ -4,12 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { apiRegister } from "@/api/rider/register";
 import { setToken } from "@/reducers/rider/reducers"
-import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "../../api/vendor/login";
-import { Toast } from "antd-mobile"
+import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "@/api/rider/login";
 import { useDispatch } from "react-redux"
 import '@/assets/css/login.css'
-import { Helmet } from "react-helmet";
-
 
 const Login = (props) => {
     const [data, setState] = useState({email:'', password:''})

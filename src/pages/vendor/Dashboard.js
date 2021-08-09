@@ -1,17 +1,20 @@
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { imagePath } from '@/services/assetsHelper'
 import { useEffect, useState } from "react";
 import { Button, NoticeBar } from 'antd-mobile';
-import { Typography, Layout, Drawer, PageHeader } from 'antd';
+import { Typography, Layout, Drawer, PageHeader, Menu } from 'antd';
 import { apiUser } from "@/api/vendor/dashboard";
 import { useDispatch, useSelector } from "react-redux";
+import { MailOutlined } from '@ant-design/icons';
 
 import { userStore, getUser } from "@/reducers/reducers";
 
 const Dashboard = () => {
     const [visible, setVisible] = useState(false);
     const { Text } = Typography;
-    const { Header, Content, Footer } = Layout;
+    const { Content } = Layout;
+    const { SubMenu } = Menu;
+
     const showDrawer = () => {
         setVisible(true);
     };
@@ -23,18 +26,21 @@ const Dashboard = () => {
         setVisible(false);
     };
 
+    const handleClick = e => {
+        console.log(e.key)
+        history.push(e.key)
+    };
 
     useEffect(() => {
 
-        if(userSelector.length === 0 || typeof userSelector === "undefined") {
-
+        if(userSelector.length === 0) {
             apiUser().then(res => {          
                 if(res.data.location !== null) {
                     dispatch(userStore(res.data))
                 }
             })
         }
-    },[userSelector])
+    },[dispatch, userSelector])
 
     return (
         <Layout>
@@ -68,15 +74,25 @@ const Dashboard = () => {
         >
             <section className="mt-4 pb-4" >
                 <Drawer
-                    title="Basic Drawer"
+                    title="Menu"
                     placement="left"
                     closable={false}
                     onClose={onClose}
                     visible={visible}
-                >
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
+                    className="p-0"
+                >   
+
+                    <Menu
+                        onClick={handleClick}
+                        defaultSelectedKeys={['/ticket/create']}
+                        defaultOpenKeys={['sub1']}
+                        mode="inline"
+                    >
+                        <SubMenu key="sub1" icon={<MailOutlined />} title="Ticket">
+                            <Menu.Item key="/ticket/create" className="my-0 py-0">Open New Ticket</Menu.Item>
+                            <Menu.Item key="/ticket?type=all" className="my-0 py-0">Ticket List</Menu.Item>
+                        </SubMenu>
+                    </Menu>
                 </Drawer>
                 <div className="pt-3">
                     <div>

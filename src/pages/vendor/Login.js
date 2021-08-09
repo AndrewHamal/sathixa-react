@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {hasUpper, hasLower, hasNumber, hasSpecialCharacter, isValidated, hasEightString, loggedIn} from "../../helper/helper";
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
-import { apiRegister } from "../../api/vendor/register";
-import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "../../api/vendor/login";
+import { apiRegister } from "@/api/vendor/register";
+import { apiLogin, apiGoogleRedirect, apiGoogleCallback } from "@/api/vendor/login";
 import { useDispatch } from "react-redux"
 import { token } from "@/reducers/reducers";
 
@@ -12,7 +12,6 @@ const Login = (props) => {
     const loggedIn = sessionStorage.getItem('loggedIn')
     const history = useHistory()
     const dispatch = useDispatch()
-
 
     const [upperError, setUpperError] = useState(1)
     const [lowerError, setlowerError] = useState(1)
@@ -33,13 +32,12 @@ const Login = (props) => {
 
         apiLogin(data)
             .then(res => {
-                dispatch(token(true))
-                setLoader(false)
-                setDisableSubmit( false )
-                localStorage.setItem('_token', res.data.token)
                 localStorage.setItem('loggedIn', true);
+                localStorage.setItem('_token', res.data.token)
+                setLoader(false)
+                dispatch(token(true))
+                setDisableSubmit( false )
                 history.push('/dashboard')
-
             }).catch(err => {
                 // console.log(err)
                 setLoader(false)
@@ -78,20 +76,21 @@ const Login = (props) => {
                         setPasswordError(false)
                 })
         }
-    }, []);
+    }, [history, props]);
 
     const handleSignupSubmit = (event) => {
         event.preventDefault()
         setLoader(true)
         setDisableSubmit(true)
 
-        let res = apiRegister(data)
-        res.then(resp => {
+        apiRegister(data)
+        .then(resp => {
             props.login(resp.data.access_token);
             history.push('/dashboard')
             setLoader(false)
             setDisableSubmit(false)
         }).catch(err => {
+   
             setLoader(false)
             setDisableSubmit(false)
             if(err.data){
@@ -172,7 +171,7 @@ const Login = (props) => {
     return (
 
         <div>
-            <section className="container pt-4 px-2">
+            <section className="container bg-white pt-4 px-2">
                 <div className="col-md-12 text-center">
                     <ul className="nav nav-pills mb-5" id="pills-tab" role="tablist">
                         <li className="nav-item">
@@ -253,7 +252,7 @@ const Login = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="tab-pane fade" id="pills-profile" role="tabpanel"
+                        <div className="tab-pane fade bg-white" id="pills-profile" role="tabpanel"
                              aria-labelledby="pills-profile-tab">
                             <div className="mt-4">
                                 <form onSubmit={handleSignupSubmit} id={"form"}>
@@ -352,13 +351,13 @@ const Login = (props) => {
                                     </div>
                                 </form>
                             </div>
-                            <div className="mt-5">
-                                <p className="font-12">By clicking button above you agree our <a href="#"
+                            <div className="mt-5 pb-3">
+                                <p className="font-12">By clicking button above you agree our <Link to="/"
                                                                                                  className="terms-color">terms
-                                    of use </a>
+                                    of use </Link>
                                     and
-                                    <a href="#" className="terms-color">privacy
-                                        policies</a>
+                                    <Link to="/" className="terms-color"> privacy
+                                        policies</Link>
                                 </p>
                             </div>
                         </div>

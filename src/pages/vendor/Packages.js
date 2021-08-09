@@ -2,12 +2,12 @@ import {useEffect, useState} from "react";
 import { getPackages } from "../../api/vendor";
 import {getPackage, packageStore} from "../../reducers/reducers";
 import {useDispatch, useSelector} from "react-redux";
-import {SegmentedControl, Pagination, Icon} from "antd-mobile";
+import {SegmentedControl, Pagination} from "antd-mobile";
 import {Skeleton, Layout, Empty} from "antd";
 import { Link } from "react-router-dom";
 import * as BS from "bikram-sambat-js"
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
 const Packages = () => {
     const dispatch = useDispatch();
@@ -25,6 +25,8 @@ const Packages = () => {
     };
 
     const fetchData = (search, page, type, changeSegment=false) => {
+        setLoader(true);
+        dispatch(packageStore([]))
         getPackages(search, page, type)
             .then(res => {
                 if(res.data.data.length === 0){
@@ -69,16 +71,15 @@ const Packages = () => {
             })
     }
 
-    const getFilterPackages = () => {
-        fetchData('', nextPage, segment)
-    }
 
     useEffect(() => {
+
         if(packageValue.length === 0) {
             fetchData('', nextPage, 0)
         }else{
-            setLoader(false)
+            fetchData('', nextPage, 0)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -257,7 +258,7 @@ const Packages = () => {
                                             <i className="fas fa-store m-auto" />
                                         </div>
                                         <div className="ml-1">
-                                            <p className="font-17 font-weight-bold">{ res.receiver_name }</p>
+                                            <p className="font-17 font-weight-bold">{ res?.receiver_name }</p>
                                             <p className="package-card-date pt-0">{ res?.location?.city }</p>
                                         </div>
                                     </div>
@@ -287,10 +288,7 @@ const Packages = () => {
                         locale={locale} 
                         onChange={e => fetchData('', e, segment)}
                     /> : null
-
                 }
-   
-
             </div>
         </div>
     </section>
