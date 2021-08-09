@@ -15,7 +15,7 @@ import Documents from "./pages/vendor/Documents";
 import ProfileRider from "./pages/rider/ProfileRider";
 import authClient from '@/services/auth';
 
-import { isAuthRider, setToken } from "@/reducers/rider/reducers"
+import { isAuthRider } from "@/reducers/rider/reducers"
 
 import VendorLayout from "@/components/vendor/layouts"
 import vendorRoutes from "@/routes/vendor"
@@ -25,14 +25,14 @@ import riderRoutes from "@/routes/rider"
 
 import { vendorAuth } from "@/reducers/reducers"
 
-import authClientInstance from "@/services/rider/auth"
-
 import Test from "@/pages/test"
 
 const App = () => {
 
     const ref = useRef(null)
     const dispatch = useDispatch()
+
+    const [subdomain] = window.location.hostname.split(".");
 
     const isRiderAuth = useSelector(isAuthRider)
 
@@ -188,8 +188,8 @@ const App = () => {
 
 
                 {/* Rider routes  */}
-                {history.location.pathname.match('/rider') ?
-                <Router exact basename="/rider">
+                {history.location.pathname.match('/rider') || subdomain === 'rider' ?
+                <Router exact basename={subdomain === 'rider' ? '' : "/rider"}>
                   <Switch>
                     <Route exact render={props =>
                       !isRiderAuth ? (
@@ -215,8 +215,8 @@ const App = () => {
 
                   
                 {/* vendor routes  */}
-                {history.location.pathname.match('/vendor') ?
-                <Router exact basename="/vendor">
+                {history.location.pathname.match('/vendor') || subdomain === 'vendor' ?
+                <Router exact basename={subdomain === 'vendor' ? '' : "/vendor"}>
                   <Switch>
                     <Route path="/login" component={Login}/>
                     <VendorLayout 
