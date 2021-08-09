@@ -3,7 +3,7 @@ name: Generate a build and push to production branch
 on:
   push:
     branches:
-      - refactor
+      - production
 
 jobs:
   build:
