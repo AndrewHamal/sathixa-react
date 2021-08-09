@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
-    "@craco/craco": "^5.6.4",
+    "@craco/craco": "^6.2.0",
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
@@ -61,8 +61,8 @@
   },
   "scripts": {
     "start": "HTTPS=true SSL_CRT_FILE=./.cert/cert.pem SSL_KEY_FILE=./.cert/key.pem craco start",
-    "build": "react-app-rewired craco build",
-    "test": "react-app-rewired craco test",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "start-sw": "http-server ./build"
   },
